@@ -1,0 +1,47 @@
+﻿@page "/pressureReadings"
+
+@using BlazorApp.Data
+@using Domain.Models
+@inject PressureReadingService PressureService
+
+<h1>Pressure Readings</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (readings == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Raw value</th>
+                <th>BAR</th>
+                <th>PSI</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reading in readings)
+            {
+                <tr>
+                    <td>@reading.RawValue</td>
+                    <td>@reading.BAR</td>
+                    <td>@reading.PSI</td>
+                    <td>@reading.TimeStamp</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private PressureReading[] readings;
+
+    protected override async Task OnInitializedAsync()
+    {
+        readings = await PressureService.GetPressureReadingAsync();
+    }
+}

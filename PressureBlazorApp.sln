@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29709.97
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorApp", "BlazorApp1\BlazorApp.csproj", "{1CF8C403-F040-45DC-A94B-EFAA9E4E611E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PressureCore", "PressureCore\PressureCore.csproj", "{8C005062-2028-4083-A1F7-4BA8ADDCAA60}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{8EEF3ED5-D2D5-4A46-9FF5-938133AFCDB5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1CF8C403-F040-45DC-A94B-EFAA9E4E611E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CF8C403-F040-45DC-A94B-EFAA9E4E611E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CF8C403-F040-45DC-A94B-EFAA9E4E611E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CF8C403-F040-45DC-A94B-EFAA9E4E611E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C005062-2028-4083-A1F7-4BA8ADDCAA60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C005062-2028-4083-A1F7-4BA8ADDCAA60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C005062-2028-4083-A1F7-4BA8ADDCAA60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C005062-2028-4083-A1F7-4BA8ADDCAA60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EEF3ED5-D2D5-4A46-9FF5-938133AFCDB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EEF3ED5-D2D5-4A46-9FF5-938133AFCDB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EEF3ED5-D2D5-4A46-9FF5-938133AFCDB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EEF3ED5-D2D5-4A46-9FF5-938133AFCDB5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CE0492A3-7369-4721-8BFE-8CDBCA7C8401}
+	EndGlobalSection
+EndGlobal
