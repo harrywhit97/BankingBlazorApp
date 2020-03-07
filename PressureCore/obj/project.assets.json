@@ -5109,11 +5109,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\harry\\source\\repos\\BlazorApp1\\PressureCore\\PressureCore.csproj",
+      "projectUniqueName": "C:\\Users\\harry\\source\\repos\\PressureBlazorApp\\PressureCore\\PressureCore.csproj",
       "projectName": "PressureCore",
-      "projectPath": "C:\\Users\\harry\\source\\repos\\BlazorApp1\\PressureCore\\PressureCore.csproj",
+      "projectPath": "C:\\Users\\harry\\source\\repos\\PressureBlazorApp\\PressureCore\\PressureCore.csproj",
       "packagesPath": "C:\\Users\\harry\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\harry\\source\\repos\\BlazorApp1\\PressureCore\\obj\\",
+      "outputPath": "C:\\Users\\harry\\source\\repos\\PressureBlazorApp\\PressureCore\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -5132,8 +5132,8 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "C:\\Users\\harry\\source\\repos\\BlazorApp1\\Domain\\Domain.csproj": {
-              "projectPath": "C:\\Users\\harry\\source\\repos\\BlazorApp1\\Domain\\Domain.csproj"
+            "C:\\Users\\harry\\source\\repos\\PressureBlazorApp\\Domain\\Domain.csproj": {
+              "projectPath": "C:\\Users\\harry\\source\\repos\\PressureBlazorApp\\Domain\\Domain.csproj"
             }
           }
         }
