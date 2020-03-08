@@ -21,14 +21,19 @@ namespace BlazorApp.Data
                 ArduinoTotalIntervals = 1024
             };
 
+            var num = 5;
 
+            var rawVals = new int[num];
 
-            return Task.FromResult(Enumerable.Range(1, 5).Select(index => new PressureReading
+            for (int i = 0; i < num; i++)
+                rawVals[i] = rng.Next(100, 255);                           
+
+            return Task.FromResult(rawVals.Select(rawVal => new PressureReading
             {
-                RawValue = rng.Next(100, 255),
-                BAR = calculator.CalculateBAR(rng.Next(100, 255)),
-                PSI = calculator.CalculatePSI(rng.Next(100, 255)),
-                TimeStamp = new DateTimeOffset()
+                RawValue = rawVal,
+                BAR = calculator.CalculateBAR(rawVal),
+                PSI = calculator.CalculatePSI(rawVal),
+                TimeStamp = DateTimeOffset.UtcNow
             }).ToArray());
         }
     }
