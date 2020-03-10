@@ -2,18 +2,18 @@
 
 @using BlazorApp.Data
 @using Domain.Models
-@inject PressureReadingService PressureService
 
 <h1>Pressure Readings</h1>
 
 <p>This component demonstrates fetching data from a service.</p>
 
-@if (readings == null)
+@if (service == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
+    <button class="btn btn-primary" @onclick="AddReading">Generate pressure reading</button>
     <table class="table">
         <thead>
             <tr>
@@ -24,7 +24,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var reading in readings)
+            @foreach (var reading in service.GetReadings())
             {
                 <tr>
                     <td>@reading.RawValue</td>
@@ -38,10 +38,10 @@ else
 }
 
 @code {
-    private PressureReading[] readings;
+    PressureReadingService service = PressureReadingSingleton.GetService();
 
-    protected override async Task OnInitializedAsync()
-    {
-        readings = await PressureService.GetPressureReadingAsync();
+    void AddReading(){
+        service.AddReading();
     }
+    
 }
