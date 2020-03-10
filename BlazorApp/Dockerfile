@@ -5,7 +5,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster-arm64v8 AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["BlazorApp/BlazorApp.csproj", "BlazorApp/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
