@@ -23,5 +23,10 @@ namespace Domain.Repositories
         {
             return Repository;
         }
+
+        public void DeleteAllReadings()
+        {
+            Repository.Clear();
+        }
     }
 }
