@@ -23,6 +23,11 @@ namespace BlazorApp.Data
             Repository.Add(GetPressureReadingAsync(1).Result[0]);
         }
 
+        public void ClearReadings()
+        {
+            Repository.DeleteAllReadings();
+        }
+
         public IList<PressureReading> GetReadings()
         {
             return Repository.GetPressureReadings();
