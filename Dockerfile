@@ -10,6 +10,7 @@ WORKDIR /src
 COPY ["BlazorApp/BlazorApp.csproj", "BlazorApp/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
 COPY ["PressureCore/PressureCore.csproj", "PressureCore/"]
+COPY ["Repository/Repository.csproj", "Repository/"]
 RUN dotnet restore "BlazorApp/BlazorApp.csproj"
 COPY . .
 WORKDIR "/src/BlazorApp"
