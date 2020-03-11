@@ -47,6 +47,7 @@ namespace Repository.Repositories
         public void Remove(TEntity item)
         {
             Repository.Remove(item);
+            Context.SaveChanges();
         }
     }
 }

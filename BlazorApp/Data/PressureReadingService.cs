@@ -13,7 +13,9 @@ namespace BlazorApp.Data
     public class PressureReadingService
     {
         IRepository<PressureReading> Repository;
-        const RepositoryType repositoryType = RepositoryType.SQLDataBase;
+
+        //TODO move these in to app config
+        const RepositoryType repositoryType = RepositoryType.InMemory;
         
 
         public PressureReadingService()
@@ -23,7 +25,17 @@ namespace BlazorApp.Data
 
         public void AddReading()
         {
-            Repository.Add(GetPressureReadingAsync(1).Result[0]);
+            AddReading(GeneratePressureReadings(1)[0]);
+        }
+
+        public void AddReading(PressureReading reading)
+        {
+            Repository.Add(reading);
+        }
+
+        public void RemoveReading(PressureReading reading)
+        {
+            Repository.Remove(reading);
         }
 
         public void ClearReadings()
@@ -36,24 +48,6 @@ namespace BlazorApp.Data
             return Repository.GetAll();
         }
 
-        public Task<PressureReading[]> GetPressureReadingAsync(int num)
-        {
-            var rng = new Random();
-            var calculator = GetCalculator();
-            var rawVals = new int[num];
-
-            for (int i = 0; i < num; i++)
-                rawVals[i] = rng.Next(100, 255);
-
-            return Task.FromResult(rawVals.Select(rawVal => new PressureReading
-            {
-                RawValue = rawVal,
-                BAR = calculator.CalculateBAR(rawVal),
-                PSI = calculator.CalculatePSI(rawVal),
-                TimeStamp = DateTimeOffset.UtcNow
-            }).ToArray());
-        }
-
         IList<PressureReading> GeneratePressureReadings(int numVals)
         {
             var calc = GetCalculator();
@@ -64,14 +58,40 @@ namespace BlazorApp.Data
             for (int i = 0; i < numVals; i++)
             {
                 var rawValue = rng.Next(100, 255);
-                readings.Add(GeneratePressureReading(rawValue, calc));
+                readings.Add(CalculatePressureReading(rawValue, calc));
             }
 
             return readings;
         }
 
-        PressureReading GeneratePressureReading(int rawValue, PressureCalculator calculator)
+        public PressureReading CalculatePressureReading(BasePressureReading basePressureReading, PressureCalculator calculator = null)
         {
+            if (calculator is null)
+                calculator = GetCalculator();
+
+            return new PressureReading()
+            {
+                RawValue = basePressureReading.RawValue,
+                TimeStamp = basePressureReading.TimeStamp,
+                BAR = calculator.CalculateBAR(basePressureReading.RawValue),
+                PSI = calculator.CalculatePSI(basePressureReading.RawValue)
+            };
+        }
+
+        public BasePressureReading CreateBasePressureReading(int raw)
+        {
+            return new BasePressureReading()
+            {
+                RawValue = raw,
+                TimeStamp = DateTimeOffset.UtcNow
+            };
+        }
+
+        public PressureReading CalculatePressureReading(int rawValue, PressureCalculator calculator = null)
+        {
+            if (calculator is null)
+                calculator = GetCalculator();
+
             return new PressureReading()
             {
                 RawValue = rawValue,
