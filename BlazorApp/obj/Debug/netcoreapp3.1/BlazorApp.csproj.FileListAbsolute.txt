@@ -180,3 +180,5 @@ C:\Users\harry\source\repos\PressureBlazorApp\BlazorApp\obj\Debug\netcoreapp3.1\
 C:\Users\harry\source\repos\PressureBlazorApp\BlazorApp\obj\Debug\netcoreapp3.1\Razor\Shared\MainLayout.razor.g.cs
 C:\Users\harry\source\repos\PressureBlazorApp\BlazorApp\obj\Debug\netcoreapp3.1\Razor\Shared\NavMenu.razor.g.cs
 C:\Users\harry\source\repos\PressureBlazorApp\BlazorApp\obj\Debug\netcoreapp3.1\Razor\_Imports.razor.g.cs
+C:\Users\harry\source\repos\PressureBlazorApp\BlazorApp\bin\Debug\netcoreapp3.1\Repository.dll
+C:\Users\harry\source\repos\PressureBlazorApp\BlazorApp\bin\Debug\netcoreapp3.1\Repository.pdb
