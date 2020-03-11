@@ -4,18 +4,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Domain.Repositories;
+using Repository.Repositories;
+using Repository.Interfaces;
+using Repository;
 
 namespace BlazorApp.Data
 {
     public class PressureReadingService
     {
-        PressureReadingRepository Repository;
+        IRepository<PressureReading> Repository;
+        const RepositoryType repositoryType = RepositoryType.SQLDataBase;
+        
 
         public PressureReadingService()
         {
-            if(Repository is null)
-                Repository = new PressureReadingRepository();
+            Repository = RepositoryFactory.GetNewRepository<PressureReading>(repositoryType);
         }
 
         public void AddReading()
@@ -25,12 +28,12 @@ namespace BlazorApp.Data
 
         public void ClearReadings()
         {
-            Repository.DeleteAllReadings();
+            Repository.Clear();
         }
 
         public IList<PressureReading> GetReadings()
         {
-            return Repository.GetPressureReadings();
+            return Repository.GetAll();
         }
 
         public Task<PressureReading[]> GetPressureReadingAsync(int num)

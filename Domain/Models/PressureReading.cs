@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Domain.Abstract;
+using System;
 
 namespace Domain.Models
 {
-    public class PressureReading
+    public class PressureReading : Entity
     {
-        public long Id { get; set; }
         public decimal RawValue { get; set; }
         public decimal PSI { get; set; }
         public decimal BAR { get; set; }
