@@ -12,6 +12,8 @@ namespace Repository.Repositories
         readonly DbContext Context;
         readonly DbSet<TEntity> Repository;
 
+        public RepositoryType GetRepositoryType() => RepositoryType.SQLDataBase;
+
         public EFRepository(DbContext context)
         {
             context.Database.EnsureCreated();
@@ -48,6 +50,14 @@ namespace Repository.Repositories
         {
             Repository.Remove(item);
             Context.SaveChanges();
+        }
+
+        public void Remove(long id)
+        {
+            var entity = Get(id);
+
+            if(entity != null)
+                Repository.Remove(entity);
         }
     }
 }

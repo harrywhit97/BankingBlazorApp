@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using BlazorApp.Data;
+using Repository.Repositories;
 
 namespace BlazorApp
 {
@@ -26,10 +27,15 @@ namespace BlazorApp
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
-            services.AddSingleton<PressureReadingService>();
+
+            var unitOfWork = new UnitOfWork();
+            services.AddSingleton(typeof(PressureReadingService), new PressureReadingService(unitOfWork));
+            services.AddSingleton(typeof(UnitOfWork), unitOfWork);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,9 +57,11 @@ namespace BlazorApp
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
+
         }
     }
 }

@@ -7,8 +7,10 @@ namespace Repository.Interfaces
     {
         void Add(TEntity item);
         void Remove(TEntity item);
+        void Remove(long id);
         void Clear();
         IList<TEntity> GetAll();
         TEntity Get(long id);
+        RepositoryType GetRepositoryType();
     }
 }

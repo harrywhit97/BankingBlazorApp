@@ -2,25 +2,24 @@ using Domain.Models;
 using PressureCore.Concrete;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Repository.Repositories;
 using Repository.Interfaces;
-using Repository;
+using Domain.Controllers;
 
 namespace BlazorApp.Data
 {
     public class PressureReadingService
     {
-        IRepository<PressureReading> Repository;
+        readonly IRepository<PressureReading> Repository;
 
         //TODO move these in to app config
-        const RepositoryType repositoryType = RepositoryType.InMemory;
+        readonly PressureReadingController Controller;
         
 
-        public PressureReadingService()
+        public PressureReadingService(UnitOfWork unitOfWork)
         {
-            Repository = RepositoryFactory.GetNewRepository<PressureReading>(repositoryType);
+            Controller = new PressureReadingController(unitOfWork);
+            Repository = Controller.Repository;
         }
 
         public void AddReading()
@@ -110,19 +109,6 @@ namespace BlazorApp.Data
                 MaxVoltage = 4.24M,
                 ArduinoTotalIntervals = 1024
             };
-        }
-    }
-
-    public class PressureReadingSingleton
-    {
-        public static PressureReadingService Service;
-
-        public static PressureReadingService GetService()
-        {
-            if (Service is null)
-                Service = new PressureReadingService();
-
-            return Service;
         }
     }
 }

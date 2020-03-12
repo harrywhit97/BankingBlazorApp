@@ -10,6 +10,8 @@ namespace Repository.Repositories
         readonly IList<TEntity> Repository;
         public long? MaxSize { get; set; }
 
+        public RepositoryType GetRepositoryType() => RepositoryType.InMemory;
+
         public InMemoryRepository(long? maxSize = 50)
         {
             Repository = new List<TEntity>();
@@ -42,6 +44,14 @@ namespace Repository.Repositories
         public void Remove(TEntity item)
         {
             Repository.Remove(item);
+        }
+
+        public void Remove(long id)
+        {
+            var entity = Get(id);
+
+            if (entity != null)
+                Repository.Remove(entity);
         }
     }
 }

@@ -2,6 +2,7 @@
 
 @using BlazorApp.Data
 @using Domain.Models
+@inject PressureReadingService service
 
 <h1>Pressure Readings</h1>
 
@@ -25,7 +26,7 @@ else
 
     <button class="btn btn-primary" @onclick="service.AddReading">Generate pressure reading</button>
     <button class="btn btn-primary" @onclick="service.ClearReadings">Clear pressure readings</button>
-        
+
     <table class="table">
         <thead>
             <tr>
@@ -38,20 +39,19 @@ else
         <tbody>
             @foreach (var reading in service.GetReadings())
             {
-            <tr>
-                <td>@reading.RawValue</td>
-                <td>@reading.BAR</td>
-                <td>@reading.PSI</td>
-                <td>@reading.TimeStamp</td>
-                <button class="btn btn-primary" @onclick="@(e => service.RemoveReading(reading))">Remove</button>
-            </tr>
+                <tr>
+                    <td>@reading.RawValue</td>
+                    <td>@reading.BAR</td>
+                    <td>@reading.PSI</td>
+                    <td>@reading.TimeStamp</td>
+                    <button class="btn btn-primary" @onclick="@(e => service.RemoveReading(reading))">Remove</button>
+                </tr>
             }
         </tbody>
     </table>
 }
 
 @code {
-    PressureReadingService service = PressureReadingSingleton.GetService();
 
     BasePressureReading baseReading = new BasePressureReading();
 
