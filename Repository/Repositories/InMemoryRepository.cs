@@ -1,4 +1,4 @@
-﻿using Domain.Abstract;
+﻿using Repository.Abstract;
 using Repository.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,6 +52,11 @@ namespace Repository.Repositories
 
             if (entity != null)
                 Repository.Remove(entity);
+        }
+
+        public void AddAll(IList<TEntity> items)
+        {
+            
         }
     }
 }

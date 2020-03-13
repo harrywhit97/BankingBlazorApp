@@ -1,7 +1,7 @@
 ﻿using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Repository.Repositories
+namespace Domain
 {
     public class EFDbContext : DbContext
     {

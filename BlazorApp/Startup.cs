@@ -11,6 +11,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using BlazorApp.Data;
 using Repository.Repositories;
+using Repository;
+using Microsoft.EntityFrameworkCore;
+using Domain;
+using Domain.Controllers;
+using Domain.Models;
+using Repository.Interfaces;
 
 namespace BlazorApp
 {
@@ -27,15 +33,16 @@ namespace BlazorApp
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            var repo = RepositoryFactory.GetNewRepository<PressureReading>(RepositoryType.SQLDataBase, new EFDbContext());
+            services.AddSingleton(typeof(IRepository<PressureReading>), repo);
+
+            var pressureReadingController = new PressureReadingController(repo);
+
             services.AddControllers();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
-
-            var unitOfWork = new UnitOfWork();
-            services.AddSingleton(typeof(PressureReadingService), new PressureReadingService(unitOfWork));
-            services.AddSingleton(typeof(UnitOfWork), unitOfWork);
-
+            services.AddSingleton(typeof(PressureReadingService), new PressureReadingService(pressureReadingController));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

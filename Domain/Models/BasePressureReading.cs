@@ -1,5 +1,5 @@
-﻿using Domain.Abstract;
-using System;
+﻿using System;
+using Repository.Abstract;
 
 namespace Domain.Models
 {

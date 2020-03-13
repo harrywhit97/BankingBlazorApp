@@ -2,24 +2,18 @@ using Domain.Models;
 using PressureCore.Concrete;
 using System;
 using System.Collections.Generic;
-using Repository.Repositories;
-using Repository.Interfaces;
 using Domain.Controllers;
 
 namespace BlazorApp.Data
 {
     public class PressureReadingService
     {
-        readonly IRepository<PressureReading> Repository;
-
         //TODO move these in to app config
-        readonly PressureReadingController Controller;
-        
+        readonly PressureReadingController Controller;        
 
-        public PressureReadingService(UnitOfWork unitOfWork)
+        public PressureReadingService(PressureReadingController controller)
         {
-            Controller = new PressureReadingController(unitOfWork);
-            Repository = Controller.Repository;
+            Controller = controller;
         }
 
         public void AddReading()
@@ -29,22 +23,22 @@ namespace BlazorApp.Data
 
         public void AddReading(PressureReading reading)
         {
-            Repository.Add(reading);
+            Controller.Add(reading);
         }
 
         public void RemoveReading(PressureReading reading)
         {
-            Repository.Remove(reading);
+            Controller.Remove(reading);
         }
 
         public void ClearReadings()
         {
-            Repository.Clear();
+            Controller.Clear();
         }
 
         public IList<PressureReading> GetReadings()
         {
-            return Repository.GetAll();
+            return Controller.GetAll();
         }
 
         IList<PressureReading> GeneratePressureReadings(int numVals)

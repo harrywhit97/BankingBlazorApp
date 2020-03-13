@@ -1,7 +1,4 @@
-﻿using Domain.Abstract;
-using System;
-
-namespace Domain.Models
+﻿namespace Domain.Models
 {
     public class PressureReading : BasePressureReading
     {

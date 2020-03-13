@@ -1,5 +1,5 @@
-﻿using Domain.Abstract;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Repository.Abstract;
 using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -9,20 +9,20 @@ namespace Repository.Repositories
 {
     public class EFRepository<TEntity> : IRepository<TEntity> where TEntity : Entity
     {
-        readonly DbContext Context;
         readonly DbSet<TEntity> Repository;
+        readonly DbContext Context;
 
         public RepositoryType GetRepositoryType() => RepositoryType.SQLDataBase;
 
         public EFRepository(DbContext context)
         {
-            context.Database.EnsureCreated();
+            Context = context;
+            Context.Database.EnsureCreated();
 
             if (!context.Database.CanConnect())
                 throw new Exception("Can not connect to database");
 
-            Context = context;
-            Repository = context.Set<TEntity>();
+            Repository = Context.Set<TEntity>();
         }
 
         public void Add(TEntity item)
@@ -58,6 +58,13 @@ namespace Repository.Repositories
 
             if(entity != null)
                 Repository.Remove(entity);
+
+            Context.SaveChanges();
+        }
+
+        public void AddAll(IList<TEntity> items)
+        {
+            throw new NotImplementedException();
         }
     }
 }
