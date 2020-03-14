@@ -23,20 +23,21 @@ namespace BlazorApp
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var conString = Configuration.GetConnectionString("Database");
-            var dbContext = new EFDbContext(conString);
+            var server = Configuration["DBServer"] ?? "localhost";
+            var dbPort = Configuration["DBPort"] ?? "1443";
+            var dbUser = Configuration["DBUser"] ?? "SA";
+            var dbPass = Configuration["DBPassword"] ?? "password";
+            var dbName = Configuration["DBName"] ?? "master";
 
-            dbContext.Database.EnsureCreated();            
-
-            services.AddSingleton(typeof(DbContext), dbContext);
-
-            var pressureReadingController = new PressureReadingController(dbContext);
+            services.AddDbContext<EFDbContext>(options => 
+                options.UseSqlServer(@$"Server={server};Database={dbName};User={dbUser};Password={dbPass};"));
 
             services.AddControllers();
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddScoped<PressureReadingController>();
             services.AddSingleton<WeatherForecastService>();
-            services.AddSingleton(typeof(PressureReadingService), new PressureReadingService(pressureReadingController));
+            services.AddScoped<PressureReadingService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,6 +53,8 @@ namespace BlazorApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            PrepDb.PrepPopulation(app);
+
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseStaticFiles();

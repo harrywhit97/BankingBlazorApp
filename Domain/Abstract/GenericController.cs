@@ -13,6 +13,8 @@ namespace Domain.Abstract
 
         public GenericController(DbContext context)
         {
+            context.Database.EnsureCreated();
+
             Context = context;
             Repository = context.Set<TEntity>();
         }

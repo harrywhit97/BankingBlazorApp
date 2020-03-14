@@ -13,9 +13,10 @@ namespace Domain
             ConnectionString = connectionString;   
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public EFDbContext(DbContextOptions<EFDbContext> options) :base(options)
         {
-            optionsBuilder.UseSqlServer(ConnectionString);
+
         }
+
     }
 }
