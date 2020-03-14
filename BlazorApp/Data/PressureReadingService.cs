@@ -8,7 +8,6 @@ namespace BlazorApp.Data
 {
     public class PressureReadingService
     {
-        //TODO move these in to app config
         readonly PressureReadingController Controller;        
 
         public PressureReadingService(PressureReadingController controller)
@@ -36,7 +35,7 @@ namespace BlazorApp.Data
             Controller.Clear();
         }
 
-        public IList<PressureReading> GetReadings()
+        public IEnumerable<PressureReading> GetReadings()
         {
             return Controller.GetAll();
         }

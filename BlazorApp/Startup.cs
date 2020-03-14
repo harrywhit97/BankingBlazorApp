@@ -1,22 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using BlazorApp.Data;
-using Repository.Repositories;
-using Repository;
 using Microsoft.EntityFrameworkCore;
 using Domain;
 using Domain.Controllers;
-using Domain.Models;
-using Repository.Interfaces;
 
 namespace BlazorApp
 {
@@ -33,10 +23,13 @@ namespace BlazorApp
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var repo = RepositoryFactory.GetNewRepository<PressureReading>(RepositoryType.SQLDataBase, new EFDbContext());
-            services.AddSingleton(typeof(IRepository<PressureReading>), repo);
+            var dbContext = new EFDbContext();
 
-            var pressureReadingController = new PressureReadingController(repo);
+            dbContext.Database.EnsureCreated();
+
+            services.AddSingleton(typeof(DbContext), dbContext);
+
+            var pressureReadingController = new PressureReadingController(dbContext);
 
             services.AddControllers();
             services.AddRazorPages();

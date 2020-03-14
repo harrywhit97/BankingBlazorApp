@@ -17,7 +17,6 @@ namespace BlazorApp
                    // webBuilder.UseUrls("http://localhost:4242");
                     webBuilder.UseKestrel();
                     webBuilder.UseStartup<Startup>();                    
-                    
                 });
     }
 }

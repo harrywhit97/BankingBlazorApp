@@ -1,14 +1,13 @@
-﻿using Domain.Models;
-using Microsoft.AspNetCore.Mvc;
-using Repository.Interfaces;
+﻿using Domain.Abstract;
+using Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Controllers
 {
-    [ApiController]
     public class PressureReadingController : GenericController<PressureReading>
     {
-        public PressureReadingController(IRepository<PressureReading> repository) 
-            : base(repository)
+        public PressureReadingController(DbContext context)
+            : base(context)
         {
         }
     }
