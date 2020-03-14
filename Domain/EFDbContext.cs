@@ -6,12 +6,16 @@ namespace Domain
     public class EFDbContext : DbContext 
     {
         DbSet<PressureReading> PressureReadings { get; set; }
+        public string ConnectionString { get; set; }
+
+        public EFDbContext(string connectionString)
+        {
+            ConnectionString = connectionString;   
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(
-                @"Server=localhost;Database=Pressure;Integrated Security=True");
-
+            optionsBuilder.UseSqlServer(ConnectionString);
         }
     }
 }

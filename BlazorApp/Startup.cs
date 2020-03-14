@@ -23,9 +23,10 @@ namespace BlazorApp
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var dbContext = new EFDbContext();
+            var conString = Configuration.GetConnectionString("Database");
+            var dbContext = new EFDbContext(conString);
 
-            dbContext.Database.EnsureCreated();
+            dbContext.Database.EnsureCreated();            
 
             services.AddSingleton(typeof(DbContext), dbContext);
 
