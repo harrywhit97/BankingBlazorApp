@@ -5,18 +5,14 @@ namespace Domain
 {
     public class EFDbContext : DbContext 
     {
-        DbSet<PressureReading> PressureReadings { get; set; }
-        public string ConnectionString { get; set; }
+        DbSet<Transaction> Transactions { get; set; }
+        DbSet<Bank> Banks { get; set; }
+        DbSet<Account> Accounts { get; set; }
 
-        public EFDbContext(string connectionString)
-        {
-            ConnectionString = connectionString;   
-        }
+        public string ConnectionString { get; set; }
 
         public EFDbContext(DbContextOptions<EFDbContext> options) :base(options)
         {
-
         }
-
     }
 }

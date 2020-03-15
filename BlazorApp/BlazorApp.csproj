@@ -8,11 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.10" />
+    <PackageReference Include="Tewr.Blazor.FileReader" Version="1.4.0.20072" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BankingCore\BankingCore.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
-    <ProjectReference Include="..\PressureCore\PressureCore.csproj" />
   </ItemGroup>
 
 </Project>

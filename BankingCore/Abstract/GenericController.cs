@@ -1,15 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Domain.Abstract;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 
-namespace Domain.Abstract
+namespace BankingCore.Abstract
 {
     [ApiController]
     [Route("api/[controller]")]
     public abstract class GenericController<TEntity> : ControllerBase where TEntity : Entity
     {
         readonly public DbSet<TEntity> Repository;
-        readonly DbContext Context;
+        readonly public DbContext Context;
 
         public GenericController(DbContext context)
         {
@@ -20,19 +22,15 @@ namespace Domain.Abstract
         }
 
         [HttpGet]
-        public IQueryable<TEntity> GetAll()
+        public IEnumerable<TEntity> GetAll()
         {
-            return Repository;
+            return Repository.AsEnumerable();
         }
 
         [HttpGet("{id}")]
         public TEntity GetById(long id)
         {
             return Repository.Where(e => e.Id == id).FirstOrDefault();
-            //if (item == null)
-            //    return NotFound();
-
-            //return new ObjectResult(item);
         }
 
         [HttpPost]
