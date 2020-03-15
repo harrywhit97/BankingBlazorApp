@@ -25,7 +25,7 @@ else
 
 
     <button class="btn btn-primary" @onclick="service.AddReading">Generate pressure reading</button>
-    <button class="btn btn-primary" @onclick="service.ClearReadings">Clear pressure readings</button>
+    <button class="btn btn-primary" @onclick="service.Clear">Clear pressure readings</button>
 
     <table class="table">
         <thead>
@@ -37,14 +37,14 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var reading in service.GetReadings())
+            @foreach (var entity in service.GetAll())
             {
                 <tr>
-                    <td>@reading.RawValue</td>
-                    <td>@reading.BAR</td>
-                    <td>@reading.PSI</td>
-                    <td>@reading.TimeStamp</td>
-                    <button class="btn btn-primary" @onclick="@(e => service.RemoveReading(reading))">Remove</button>
+                    <td>@entity.RawValue</td>
+                    <td>@entity.BAR</td>
+                    <td>@entity.PSI</td>
+                    <td>@entity.TimeStamp</td>
+                    <button class="btn btn-primary" @onclick="@(e => service.Remove(entity))">Remove</button>
                 </tr>
             }
         </tbody>
@@ -59,6 +59,6 @@ else
     {
         var reading = service.CalculatePressureReading(baseReading);
         reading.TimeStamp = DateTimeOffset.UtcNow;
-        service.AddReading(reading);
+        service.Add(reading);
     }
 }

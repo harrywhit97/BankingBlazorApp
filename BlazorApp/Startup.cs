@@ -23,21 +23,37 @@ namespace BlazorApp
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var server = Configuration["DBServer"] ?? "localhost";
-            var dbPort = Configuration["DBPort"] ?? "1443";
-            var dbUser = Configuration["DBUser"] ?? "SA";
-            var dbPass = Configuration["DBPassword"] ?? "password";
-            var dbName = Configuration["DBName"] ?? "master";
+            string connectionString;
+
+            if (true)
+            {
+                connectionString = Configuration.GetConnectionString("Database");
+            }
+            else
+            {
+                var server = Configuration["DBServer"] ?? "localhost";
+                var dbPort = Configuration["DBPort"] ?? "1443";
+                var dbUser = Configuration["DBUser"] ?? "SA";
+                var dbPass = Configuration["DBPassword"] ?? "password";
+                var dbName = Configuration["DBName"] ?? "Pressure";
+                connectionString = @$"Server={server};Database={dbName};User={dbUser};Password={dbPass};";
+            }
+            
 
             services.AddDbContext<EFDbContext>(options => 
-                options.UseSqlServer(@$"Server={server};Database={dbName};User={dbUser};Password={dbPass};"));
+                options.UseSqlServer(connectionString));
 
             services.AddControllers();
             services.AddRazorPages();
             services.AddServerSideBlazor();
+
             services.AddScoped<PressureReadingController>();
-            services.AddSingleton<WeatherForecastService>();
+            services.AddScoped<BankController>();
+            services.AddScoped<AccountController>();
+            
             services.AddScoped<PressureReadingService>();
+            services.AddScoped<BankService>();
+            services.AddScoped<AccountService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,7 +69,7 @@ namespace BlazorApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            PrepDb.PrepPopulation(app);
+            //PrepDb.PrepPopulation(app);
 
             app.UseHttpsRedirection();
             app.UseRouting();

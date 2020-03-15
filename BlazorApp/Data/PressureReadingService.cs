@@ -3,41 +3,19 @@ using PressureCore.Concrete;
 using System;
 using System.Collections.Generic;
 using Domain.Controllers;
+using BlazorApp.Abstract;
 
 namespace BlazorApp.Data
 {
-    public class PressureReadingService
-    {
-        readonly PressureReadingController Controller;        
-
-        public PressureReadingService(PressureReadingController controller)
+    public class PressureReadingService : GenericService<PressureReading>
+    { 
+        public PressureReadingService(PressureReadingController controller) : base(controller)
         {
-            Controller = controller;
         }
 
         public void AddReading()
         {
-            AddReading(GeneratePressureReadings(1)[0]);
-        }
-
-        public void AddReading(PressureReading reading)
-        {
-            Controller.Add(reading);
-        }
-
-        public void RemoveReading(PressureReading reading)
-        {
-            Controller.Remove(reading);
-        }
-
-        public void ClearReadings()
-        {
-            Controller.Clear();
-        }
-
-        public IEnumerable<PressureReading> GetReadings()
-        {
-            return Controller.GetAll();
+            Add(GeneratePressureReadings(1)[0]);
         }
 
         IList<PressureReading> GeneratePressureReadings(int numVals)

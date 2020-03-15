@@ -1,0 +1,52 @@
+﻿@page "/banks"
+
+@using BlazorApp.Data
+@using Domain.Models
+@inject BankService service
+
+<h1>Banks</h1>
+
+@if (service == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="@formEntity" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <InputText id="Bank Name" @bind-Value="formEntity.Name" />
+
+        <button type="submit">Submit</button>
+    </EditForm>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Bank Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entity in service.GetAll())
+            {
+                <tr>
+                    <td>@entity.Id</td>
+                    <td>@entity.Name</td>
+                    <button class="btn btn-primary" @onclick="@(e => service.Remove(entity))">Remove</button>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    Domain.Models.Bank formEntity = new Domain.Models.Bank();
+
+    private void HandleValidSubmit()
+    {
+        service.Add(service.Clone(formEntity));
+    }
+}
