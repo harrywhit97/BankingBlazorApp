@@ -1,6 +1,6 @@
 ﻿namespace Domain.Enums
 {
-    public enum AccountType
+    public enum TransactionType
     {
         Credit, Debit
     }

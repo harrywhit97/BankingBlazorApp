@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace BlazorApp.Abstract
+namespace BankingCore.Abstract
 {
     public class GenericService<TEntity> where TEntity : Entity
     {

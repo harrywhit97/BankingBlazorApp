@@ -7,7 +7,7 @@ namespace Domain.Models
     {
         public string Name { get; set; }
         public string BankName { get; set; }
-        public AccountType AccountType { get; set; }
+        public TransactionType AccountType { get; set; }
         public decimal Balance { get; set; }
     }
 }

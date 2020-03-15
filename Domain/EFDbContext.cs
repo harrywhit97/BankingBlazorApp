@@ -5,7 +5,7 @@ namespace Domain
 {
     public class EFDbContext : DbContext 
     {
-        DbSet<PressureReading> PressureReadings { get; set; }
+        DbSet<Transaction> Transactions { get; set; }
         DbSet<Bank> Banks { get; set; }
         DbSet<Account> Accounts { get; set; }
 

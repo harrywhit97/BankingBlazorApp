@@ -1,7 +1,8 @@
-﻿using Domain.Abstract;
+﻿using BankingCore.Abstract;
+using Domain;
 using Domain.Models;
 
-namespace Domain.Controllers
+namespace BankingCore.Controllers
 {
     public class BankController : GenericController<Bank>
     {

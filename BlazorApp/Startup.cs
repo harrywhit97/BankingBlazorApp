@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using BlazorApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Domain;
-using Domain.Controllers;
+using Blazor.FileReader;
+using BankingCore.Controllers;
+using BankingCore.Services;
 
 namespace BlazorApp
 {
@@ -37,8 +38,7 @@ namespace BlazorApp
                 var dbPass = Configuration["DBPassword"] ?? "password";
                 var dbName = Configuration["DBName"] ?? "Pressure";
                 connectionString = @$"Server={server};Database={dbName};User={dbUser};Password={dbPass};";
-            }
-            
+            }            
 
             services.AddDbContext<EFDbContext>(options => 
                 options.UseSqlServer(connectionString));
@@ -47,13 +47,16 @@ namespace BlazorApp
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
-            services.AddScoped<PressureReadingController>();
             services.AddScoped<BankController>();
             services.AddScoped<AccountController>();
+            services.AddScoped<UploadController>();
+            services.AddScoped<TransactionController>();
             
-            services.AddScoped<PressureReadingService>();
             services.AddScoped<BankService>();
             services.AddScoped<AccountService>();
+            services.AddScoped<System.Net.Http.HttpClient>();
+
+            services.AddFileReaderService();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -74,6 +77,7 @@ namespace BlazorApp
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseStaticFiles();
+            app.UseCors();
 
             app.UseEndpoints(endpoints =>
             {
