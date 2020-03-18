@@ -14,20 +14,19 @@
 else
 {
     <EditForm Model="@formEntity" OnValidSubmit="HandleValidSubmit">
-        <DataAnnotationsValidator />
         <ValidationSummary />
 
         <InputText id="Account Name" @bind-Value="formEntity.Name" />
-        <select @bind="formEntity.BankName">
+        <select @bind="bankId">
             @foreach (var bank in service.GetBankList())
             {
-                <option value="@bank.Name">@bank.Name</option>
+                <option value=@bank.Id>@bank.Name</option>
             }
         </select>
-        <select @bind="formEntity.BankName">
+        <select @bind="formEntity.AccountType">
             @foreach (var accountType in Enum.GetValues(typeof(TransactionType)).Cast<TransactionType>())
             {
-                <option value="@accountType">@accountType</option>
+                <option value=@accountType>@accountType</option>
             }
         </select>
         <button type="submit">Submit</button>
@@ -49,7 +48,7 @@ else
                 <tr>
                     <td>@entity.Id</td>
                     <td>@entity.Name</td>
-                    <td>@entity.BankName</td>
+                    <td>@entity.Bank.Name</td>
                     <td>@entity.AccountType</td>
                     <td>@entity.Balance</td>
                     <button class="btn btn-primary" @onclick="@(e => service.Remove(entity))">Remove</button>
@@ -60,12 +59,17 @@ else
 }
 
 @code {
+    long bankId = 0;
+    Account formEntity = new Account();
 
-    Domain.Models.Account formEntity = new Domain.Models.Account();
-
-    private void HandleValidSubmit()
+    void HandleValidSubmit()
     {
-
-        service.Add(service.Clone(formEntity));
+        Console.WriteLine($"Bank Id = {bankId}");
+        var bank = service.GetBankById(bankId);
+        Console.WriteLine($"Bank name = {bank.Name}");
+        var newAccount = service.Clone(formEntity);
+        newAccount.Bank = bank;
+        Console.WriteLine($"New account bank = {newAccount.Bank.Name}");
+        service.Add(newAccount);
     }
 }

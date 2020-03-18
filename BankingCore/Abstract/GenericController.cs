@@ -40,6 +40,16 @@ namespace BankingCore.Abstract
             Context.SaveChanges();
         }
 
+        [HttpPost]
+        public void AddAll(IEnumerable<TEntity> entities)
+        {
+            foreach (var entity in entities)
+            {
+                Repository.Add(entity);
+            }            
+            Context.SaveChanges();
+        }
+
         [HttpDelete]
         public void Remove(TEntity entity)
         {

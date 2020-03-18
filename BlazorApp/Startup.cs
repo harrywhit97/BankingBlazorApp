@@ -49,11 +49,12 @@ namespace BlazorApp
 
             services.AddScoped<BankController>();
             services.AddScoped<AccountController>();
-            services.AddScoped<UploadController>();
             services.AddScoped<TransactionController>();
             
             services.AddScoped<BankService>();
             services.AddScoped<AccountService>();
+            services.AddScoped<TransactionService>();
+
             services.AddScoped<System.Net.Http.HttpClient>();
 
             services.AddFileReaderService();

@@ -15,5 +15,6 @@ namespace BankingCore.Services
         }
 
         public IEnumerable<Bank> GetBankList() => BankController.GetAll();
+        public Bank GetBankById(long id) => BankController.GetById(id);
     }
 }
