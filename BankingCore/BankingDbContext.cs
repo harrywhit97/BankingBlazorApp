@@ -1,9 +1,9 @@
 ﻿using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Domain
+namespace BankingCore
 {
-    public class EFDbContext : DbContext
+    public class BankingDbContext : DbContext
     {
         DbSet<Transaction> Transactions { get; set; }
         DbSet<Bank> Banks { get; set; }
@@ -11,9 +11,10 @@ namespace Domain
 
         public string ConnectionString { get; set; }
 
-        public EFDbContext(DbContextOptions<EFDbContext> options) : base(options)
+        public BankingDbContext(DbContextOptions<BankingDbContext> options) : base(options)
         {
         }
+
         protected override void OnModelCreating(ModelBuilder modelbuilder)
         {
             modelbuilder.Entity<Transaction>()

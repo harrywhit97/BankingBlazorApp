@@ -15,7 +15,6 @@ namespace CsvReader
 
         public CsvTransactionMap()
         {
-
             Map(x => x.Date).Index(0);
             Map(x => x.Description).Index(1);
             Map(x => x.Credit).Index(6);

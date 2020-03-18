@@ -1,11 +1,12 @@
 using BankingCore.Abstract;
+using BankingCore.Validation;
 using BankingCore.Controllers;
 using Domain.Models;
 using System.Collections.Generic;
 
 namespace BankingCore.Services
 {
-    public class AccountService : GenericService<Account>
+    public class AccountService : GenericService<Account, AccountValidator>
     {
         BankController BankController;
 

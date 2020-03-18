@@ -17,18 +17,19 @@
 else
 {
     <h3>Import </h3>
-    <input type="file" multiple @ref=inputElement />
-    <button @onclick="UploadFiles">Upload</button>
-    Account: <select @bind="accountId">
+    <select id="Account" @bind="accountId">
         @foreach (var account in service.GetAllAcounts())
         {
             <option value=@account.Id>@account.Name</option>
         }
     </select>
+    <input type="file" multiple @ref=inputElement />
+    <button @onclick="UploadFiles">Upload</button>
+
     <br /><pre>@debug</pre>
 
     <button class="btn btn-primary" @onclick="@(e => service.Clear())">Clear</button>
-    <table class="table">
+    <table class="table" border="1" cellpadding="15">
         <thead>
             <tr>
                 <th>Id</th>
@@ -43,14 +44,15 @@ else
         <tbody>
             @foreach (var entity in service.GetAll())
             {
-                <tr>
-                    <td>@entity.Id</td>
-                    <td>@entity.Description</td>
-                    <td>@entity.Classification</td>
-                    <td>@entity.TransactionType</td>
-                    <td>@entity.Account.Name</td>
-                    <td>@entity.Amount</td>
-                </tr>
+            <tr>
+                <td>@entity.Id</td>
+                <td>@entity.Date</td>
+                <td>@entity.Description</td>
+                <td>@entity.Classification</td>
+                <td>@entity.Account.Name</td>
+                <td>@entity.TransactionType</td>
+                <td>@entity.Amount</td>
+            </tr>
             }
         </tbody>
     </table>

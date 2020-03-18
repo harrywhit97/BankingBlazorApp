@@ -8,8 +8,8 @@ namespace Domain.Models
     public class Transaction : Entity
     {
         public string Description { get; set; }
-        public Account Account { get; set; }
-        public Bank Bank { get; set; }
+        public virtual Account Account { get; set; }
+        public virtual Bank Bank { get; set; }
         public DateTimeOffset Date { get; set; }
         public decimal Amount { get; set; }
         public string Classification { get; set; }

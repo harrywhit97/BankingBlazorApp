@@ -64,12 +64,8 @@ else
 
     void HandleValidSubmit()
     {
-        Console.WriteLine($"Bank Id = {bankId}");
-        var bank = service.GetBankById(bankId);
-        Console.WriteLine($"Bank name = {bank.Name}");
         var newAccount = service.Clone(formEntity);
-        newAccount.Bank = bank;
-        Console.WriteLine($"New account bank = {newAccount.Bank.Name}");
+        newAccount.Bank = service.GetBankById(bankId);
         service.Add(newAccount);
     }
 }

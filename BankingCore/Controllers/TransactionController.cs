@@ -1,4 +1,5 @@
 ﻿using BankingCore.Abstract;
+using BankingCore.Validation;
 using Domain;
 using Domain.Models;
 using Microsoft.AspNetCore.Cors;
@@ -11,12 +12,12 @@ using System;
 namespace BankingCore.Controllers
 {
     [EnableCors()]
-    public class TransactionController : GenericController<Transaction>
+    public class TransactionController : GenericController<Transaction, TransactionValidator>
     {
         readonly AccountController AccountController;
 
-        public TransactionController(EFDbContext context, AccountController accountController)
-            : base(context)
+        public TransactionController(BankingDbContext context, TransactionValidator validator, AccountController accountController)
+            : base(context, validator)
         {
             AccountController = accountController;
         }
@@ -28,6 +29,7 @@ namespace BankingCore.Controllers
             {
                 Console.WriteLine($"Importing file : {file.FileName}");
                 List<Transaction> transactions = new List<Transaction>();
+
                 using (var stream = file.OpenReadStream())
                 {
                     transactions.AddRange(CsvReader.Reader.ReadFileStream(stream));
@@ -38,6 +40,7 @@ namespace BankingCore.Controllers
                 for (int i = 0; i < transactions.Count; i++)
                 {
                     transactions[i].Account = account;
+                    transactions[i].Bank = account.Bank;
                 }
                 AddAll(transactions);
             }
