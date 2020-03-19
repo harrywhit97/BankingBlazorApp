@@ -1,14 +1,17 @@
 ﻿using Domain.Abstract;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using FluentValidation;
 
 namespace BankingCore.Abstract
 {
-    public class GenericService<TEntity> where TEntity : Entity
-    {
-        GenericController<TEntity> Controller;
 
-        public GenericService(GenericController<TEntity> controller)
+    //TODO: remove services and replace with comproller api requests form UI
+    public class GenericService<TEntity, TValidator> where TEntity : Entity where TValidator : AbstractValidator<TEntity>
+    {
+        GenericController<TEntity, TValidator> Controller;
+
+        public GenericService(GenericController<TEntity, TValidator> controller)
         {
             Controller = controller;
         }

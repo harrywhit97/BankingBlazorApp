@@ -4,10 +4,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Domain;
+using BankingCore;
 using Blazor.FileReader;
 using BankingCore.Controllers;
 using BankingCore.Services;
+using BankingCore.Validation;
 
 namespace BlazorApp
 {
@@ -40,7 +41,7 @@ namespace BlazorApp
                 connectionString = @$"Server={server};Database={dbName};User={dbUser};Password={dbPass};";
             }            
 
-            services.AddDbContext<EFDbContext>(options => 
+            services.AddDbContext<BankingDbContext>(options => 
                 options.UseSqlServer(connectionString));
 
             services.AddControllers();
@@ -49,11 +50,16 @@ namespace BlazorApp
 
             services.AddScoped<BankController>();
             services.AddScoped<AccountController>();
-            services.AddScoped<UploadController>();
             services.AddScoped<TransactionController>();
             
             services.AddScoped<BankService>();
             services.AddScoped<AccountService>();
+            services.AddScoped<TransactionService>();
+
+            services.AddScoped<BankValidator>();
+            services.AddScoped<AccountValidator>();
+            services.AddScoped<TransactionValidator>();
+
             services.AddScoped<System.Net.Http.HttpClient>();
 
             services.AddFileReaderService();
@@ -85,7 +91,6 @@ namespace BlazorApp
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
-
         }
     }
 }

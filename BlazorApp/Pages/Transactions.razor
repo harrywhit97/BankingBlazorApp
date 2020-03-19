@@ -1,0 +1,95 @@
+﻿@page "/transactions"
+
+@using  BankingCore.Services
+@using Domain.Enums
+@using Domain.Models
+@using Blazor.FileReader
+@inject IFileReaderService fileReaderService
+@inject HttpClient HttpClient
+@inject TransactionService service
+
+<h1>Transactions</h1>
+
+@if (service == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <h3>Import </h3>
+    <select id="Account" @bind="accountId">
+        @foreach (var account in service.GetAllAcounts())
+        {
+            <option value=@account.Id>@account.Name</option>
+        }
+    </select>
+    <input type="file" multiple @ref=inputElement />
+    <button @onclick="UploadFiles">Upload</button>
+
+    <br /><pre>@debug</pre>
+
+    <button class="btn btn-primary" @onclick="@(e => service.Clear())">Clear</button>
+    <table class="table" border="1" cellpadding="15">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Classificaion</th>
+                <th>Account</th>
+                <th>Transaction Type</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entity in service.GetAll())
+            {
+            <tr>
+                <td>@entity.Id</td>
+                <td>@entity.Date</td>
+                <td>@entity.Description</td>
+                <td>@entity.Classification</td>
+                <td>@entity.Account.Name</td>
+                <td>@entity.TransactionType</td>
+                <td>@entity.Amount</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    long accountId = 0;
+
+
+    //Upload things
+
+    string debug;
+    ElementReference inputElement;
+    IFileReaderRef fileReaderReference;
+
+    protected override void OnAfterRender(bool isFirstRender)
+    {
+        fileReaderReference = fileReaderService.CreateReference(inputElement);
+    }
+
+    public async Task UploadFiles()
+    {
+        var multipartFormDataContent = new MultipartFormDataContent();
+
+        multipartFormDataContent.Headers.Add("AccountId", accountId.ToString());
+
+        foreach (var file in await fileReaderReference.EnumerateFilesAsync())
+        {
+            multipartFormDataContent.Add(
+                new StreamContent(await file.OpenReadAsync(), 8192),
+                "files",
+                (await file.ReadFileInfoAsync()).Name);
+        }
+
+        var res = await HttpClient.PostAsync(requestUri: "https://localhost:5001/api/transaction/import",
+                content: multipartFormDataContent);
+        debug = await res.Content.ReadAsStringAsync();
+    }
+}

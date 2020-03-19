@@ -64,8 +64,8 @@ namespace CsvReader
 
         static TransactionType GetTransactionType(CsvTransaction transaction)
         {
-            var isCredit = string.IsNullOrEmpty(transaction.Credit);
-            var isDebit = string.IsNullOrEmpty(transaction.Debit);
+            var isCredit = !string.IsNullOrEmpty(transaction.Credit);
+            var isDebit = !string.IsNullOrEmpty(transaction.Debit);
 
             if (isCredit || isDebit)
             {
