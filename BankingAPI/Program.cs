@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using System.Net;
 
-namespace BlazorApp
+namespace BankingAPI
 {
     public class Program
     {
@@ -15,7 +16,8 @@ namespace BlazorApp
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseKestrel();
-                    webBuilder.UseStartup<Startup>();                    
+
+                    webBuilder.UseStartup<Startup>();
                 });
     }
 }

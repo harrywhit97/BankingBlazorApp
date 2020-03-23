@@ -1,15 +1,16 @@
-﻿using BankingCore.Abstract;
-using BankingCore.Validation;
-using Domain;
-using Domain.Models;
+﻿using Domain.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using BankingAPI.Abstract;
+using BankingAPI.Validation;
+using BankingAPI.Controllers;
+using BankingAPI;
 
-namespace BankingCore.Controllers
+namespace BankingAPI.Controllers
 {
     [EnableCors()]
     public class TransactionController : GenericController<Transaction, TransactionValidator>
@@ -42,7 +43,8 @@ namespace BankingCore.Controllers
                     transactions[i].Account = account;
                     transactions[i].Bank = account.Bank;
                 }
-                AddAll(transactions);
+                Repository.AddRange(transactions);
+                Context.SaveChanges();
             }
             return Ok();
         }
@@ -57,7 +59,7 @@ namespace BankingCore.Controllers
             if (!long.TryParse(accountIdHeader, out var accountId))
                 throw new Exception($"Invalid account id : {accountIdHeader}");
 
-             var account = AccountController.GetById(accountId);
+            Account account = null; //AccountController.GetEntity(accountId).Result.Value;
 
             if (account is null)
                 throw new Exception($"An account with the od if '{accountId}' count not be found");

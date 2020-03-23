@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Pressure.Interfaces
+namespace BlazorApp.Services
 {
-    interface ISensor
+    public class TranactionService
     {
     }
 }

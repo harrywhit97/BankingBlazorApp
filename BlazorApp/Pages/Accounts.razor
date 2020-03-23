@@ -1,71 +1,79 @@
 ﻿@page "/accounts"
 
-@using BankingCore.Services
 @using Domain.Models
 @using Domain.Enums
-@inject AccountService service
+@using System.Net.Http
+@inject HttpClient Http
 
 <h1>Accounts</h1>
 
-@if (service == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <EditForm Model="@formEntity" OnValidSubmit="HandleValidSubmit">
-        <ValidationSummary />
 
-        <InputText id="Account Name" @bind-Value="formEntity.Name" />
-        <select @bind="bankId">
-            @foreach (var bank in service.GetBankList())
-            {
-                <option value=@bank.Id>@bank.Name</option>
-            }
-        </select>
-        <select @bind="formEntity.AccountType">
-            @foreach (var accountType in Enum.GetValues(typeof(TransactionType)).Cast<TransactionType>())
-            {
-                <option value=@accountType>@accountType</option>
-            }
-        </select>
-        <button type="submit">Submit</button>
-    </EditForm>
 
-    <table class="table">
-        <thead>
+<EditForm Model="@formEntity" OnValidSubmit="AddItem">
+    <ValidationSummary />
+
+    <InputText id="Account Name" @bind-Value="formEntity.Name" />
+    <select @bind="bankId">
+        @foreach (var bank in banks)
+        {
+            <option value=@bank.Id>@bank.Name</option>
+        }
+    </select>
+    <select @bind="formEntity.AccountType">
+        @foreach (var accountType in Enum.GetValues(typeof(TransactionType)).Cast<TransactionType>())
+        {
+            <option value=@accountType>@accountType</option>
+        }
+    </select>
+    <button type="submit">Submit</button>
+</EditForm>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Account Name</th>
+            <th>Bank Name</th>
+            <th>Account Type</th>
+            <th>Balance</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var entity in accounts)
+        {
             <tr>
-                <th>Id</th>
-                <th>Account Name</th>
-                <th>Bank Name</th>
-                <th>Account Type</th>
-                <th>Balance</th>
+                <td>@entity.Id</td>
+                <td>@entity.Name</td>
+                <td>@entity.Bank.Name</td>
+                <td>@entity.AccountType</td>
+                <td>@entity.Balance</td>
+                <button class="btn btn-primary" @onclick="@(e => DeleteItem(entity.Id))">Remove</button>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var entity in service.GetAll())
-            {
-                <tr>
-                    <td>@entity.Id</td>
-                    <td>@entity.Name</td>
-                    <td>@entity.Bank.Name</td>
-                    <td>@entity.AccountType</td>
-                    <td>@entity.Balance</td>
-                    <button class="btn btn-primary" @onclick="@(e => service.Remove(entity))">Remove</button>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+        }
+    </tbody>
+</table>
 
 @code {
+
+    Account[] accounts;
+    Bank[] banks;
+
+    protected override async Task OnInitializedAsync() => accounts = await Http.GetJsonAsync<Account[]>("api/Account");
+      //  {
+        //    accounts = await Http.GetJsonAsync<Account[]>("api/Account");
+      //      banks = await Http.GetJsonAsync<Bank[]>("api/Bank");
+     //   };
+
     long bankId = 0;
     Account formEntity = new Account();
 
-    void HandleValidSubmit()
+    private async Task AddItem()
     {
-        var newAccount = service.Clone(formEntity);
-        newAccount.Bank = service.GetBankById(bankId);
-        service.Add(newAccount);
+        await Http.PostJsonAsync("api/account", formEntity);
+    }
+
+    private async Task DeleteItem(long id)
+    {
+        await Http.DeleteAsync($"api/Account/{id}");
     }
 }

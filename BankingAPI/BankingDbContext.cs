@@ -1,13 +1,13 @@
 ﻿using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace BankingCore
+namespace BankingAPI
 {
     public class BankingDbContext : DbContext
     {
-        DbSet<Transaction> Transactions { get; set; }
-        DbSet<Bank> Banks { get; set; }
-        DbSet<Account> Accounts { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Bank> Banks { get; set; }
+        public DbSet<Account> Accounts { get; set; }
 
         public string ConnectionString { get; set; }
 

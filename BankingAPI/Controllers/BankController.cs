@@ -1,9 +1,8 @@
-﻿using BankingCore.Abstract;
-using BankingCore.Validation;
-using Domain;
+﻿using BankingAPI.Abstract;
+using BankingAPI.Validation;
 using Domain.Models;
 
-namespace BankingCore.Controllers
+namespace BankingAPI.Controllers
 {
     public class BankController : GenericController<Bank, BankValidator>
     {

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Domain.Models;
 
-namespace BankingCore.Validation
+namespace BankingAPI.Validation
 {
     public class BankValidator : AbstractValidator<Bank>
     {
