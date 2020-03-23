@@ -1,52 +1,59 @@
 ﻿@page "/banks"
 
-@using  BankingCore.Services
 @using Domain.Models
+@using Services
+@inject HttpClient Http
 @inject BankService service
 
 <h1>Banks</h1>
 
-@if (service == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <EditForm Model="@formEntity" OnValidSubmit="HandleValidSubmit">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+<EditForm Model="@formEntity" OnValidSubmit="AddItem">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
 
-        <InputText id="Bank Name" @bind-Value="formEntity.Name" />
+    <InputText id="Bank Name" @bind-Value="formEntity.Name" />
 
-        <button type="submit">Submit</button>
-    </EditForm>
+    <button type="submit">Submit</button>
+</EditForm>
 
-    <table class="table">
-        <thead>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Bank Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var entity in banks)
+        {
             <tr>
-                <th>Id</th>
-                <th>Bank Name</th>
+                <td>@entity.Id</td>
+                <td>@entity.Name</td>
+                <button class="btn btn-primary" @onclick="@(e => Delete(entity))">Remove</button>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var entity in service.GetAll())
-            {
-                <tr>
-                    <td>@entity.Id</td>
-                    <td>@entity.Name</td>
-                    <button class="btn btn-primary" @onclick="@(e => service.Remove(entity))">Remove</button>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+        }
+    </tbody>
+</table>
 
-@code {
-
+@functions {
     Domain.Models.Bank formEntity = new Domain.Models.Bank();
 
-    private void HandleValidSubmit()
+    List<Bank> banks;
+
+    protected override async Task OnInitializedAsync()
     {
-        service.Add(service.Clone(formEntity));
+        var res = await service.GetBanksAsync();
+        banks = res.Banks;
+    }
+
+    async void Delete(Bank bank)
+    {
+        await service.DeleteBankAsync(bank);
+    }
+
+    void AddItem()
+    {
+
+
     }
 }

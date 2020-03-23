@@ -59,7 +59,7 @@ namespace BankingAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.Select().Filter().OrderBy().Count().MaxTop(10);
+                endpoints.Select().Filter().OrderBy().Count().MaxTop(10).Expand();
                 endpoints.MapODataRoute("api", "api", GetEdmModel());
             });
         }

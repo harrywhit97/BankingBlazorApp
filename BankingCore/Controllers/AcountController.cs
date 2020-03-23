@@ -4,6 +4,7 @@ using Domain.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BankingCore.Controllers
 {
@@ -13,17 +14,19 @@ namespace BankingCore.Controllers
             : base(context, validator)
         {
         }
+        
+        //[HttpGet("{id}")]
+        //public override Account GetById(long id)
+        //{
+        //    return Repository.Include(x => x.Bank)
+        //                     .Where(x => x.Id == id).FirstOrDefaultAsync().Result;
+        //}
 
-        public override Account GetById(long id)
-        {
-            return Repository.Include(x => x.Bank)
-                             .Where(x => x.Id == id).FirstOrDefaultAsync().Result;
-        }
-
-        public override IEnumerable<Account> GetAll()
-        {
-            return Repository.Include(x => x.Bank)
-                             .AsEnumerable();
-        }
+        //[HttpGet]
+        //public override IEnumerable<Account> GetAll()
+        //{
+        //    return Repository.Include(x => x.Bank)
+        //                     .AsEnumerable();
+        //}
     }
 }

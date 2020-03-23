@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
-using System;
 using Microsoft.AspNet.OData;
 
 namespace BankingAPI.Abstract
 {
-    public abstract class GenericController<TEntity, TValidator> : ControllerBase where TEntity : Entity where TValidator : AbstractValidator<TEntity>
+
+    public abstract class GenericController<TEntity, TValidator> : ODataController where TEntity : Entity where TValidator : AbstractValidator<TEntity>
     {
         readonly public DbSet<TEntity> Repository;
         readonly public DbContext Context;
@@ -29,66 +29,98 @@ namespace BankingAPI.Abstract
             return Repository.AsEnumerable();
         }
 
-        [HttpGet("{id}")]
-        public virtual TEntity GetById(long id)
+        [EnableQuery]
+        public virtual ActionResult<TEntity> Get([FromODataUri] long key)
         {
-            return Repository.Where(e => e.Id == id).FirstOrDefault();
+            var entity = Repository.Find(key);
+            if(entity is null)
+                return NotFound();
+            return entity;
         }
 
-        [HttpPost]
-        public virtual void Add(TEntity entity)
+        public virtual IActionResult Post([FromBody] TEntity entity)
         {
-            if (IsValid(entity))
+            if (!IsValid(entity))
+                return BadRequest();
+
+            Repository.Add(entity);
+            Context.SaveChanges();
+            return Created(entity);
+        }
+
+        public virtual IActionResult Delete([FromODataUri] long key)
+        {
+            var entity = Repository.Find(key); ;
+
+            if (entity is null)
+                return NotFound();
+
+            Repository.Remove(entity);
+            Context.SaveChanges();
+            return Ok();
+        }
+
+        public IActionResult Patch([FromODataUri] long key, [FromBody] Delta<TEntity> entityDelta)
+        {
+           
+            var entity = Repository.Find(key);
+            
+            if (entity is null)
+                return NotFound();
+
+            entityDelta.Patch(entity);
+            
+            try
             {
-                Repository.Add(entity);
                 Context.SaveChanges();
             }
-        }
-
-        //[HttpPost]
-        public virtual void AddAll(IEnumerable<TEntity> entities)
-        {
-            foreach (var entity in entities)
+            catch (DbUpdateConcurrencyException)
             {
-                if (IsValid(entity))
-                    Repository.Add(entity);
+                if (!EntityExists(key))
+                    return NotFound();
+                else
+                    throw;
             }
-            Context.SaveChanges();
+
+            return Updated(entity);
         }
 
-        //[HttpDelete]
-        //public virtual void Remove(TEntity entity)
-        //{
-        //    Repository.Remove(entity);
-        //    Context.SaveChanges();
-        //}
-
-        [HttpDelete("{id}")]
-        public virtual void Remove(long id)
+        public IActionResult Put([FromODataUri]long key, [FromBody] TEntity update)
         {
-            Repository.Remove(GetById(id));
-            Context.SaveChanges();
+            if (!IsValid(update))
+                return BadRequest(ModelState);
+
+            if (key != update.Id)
+                return BadRequest();
+
+            Context.Entry(update).State = EntityState.Modified;
+            try
+            {
+                Context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!EntityExists(key))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return Updated(update);
         }
 
-        [HttpDelete]
-        public virtual void Clear()
+        private bool EntityExists(long key)
         {
-            Repository.RemoveRange(Get());
-            Context.SaveChanges();
+            return Repository.Any(x => x.Id == key);
         }
 
         bool IsValid(TEntity entity)
         {
             var results = Validator.Validate(entity);
-
-            if (results.IsValid)
-                return true;
-
-            foreach (var error in results.Errors)
-            {
-                throw new Exception(error.ErrorMessage);
-            }
-            return false;
+            return results.IsValid;
         }
     }
 }

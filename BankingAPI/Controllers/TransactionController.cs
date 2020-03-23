@@ -43,7 +43,8 @@ namespace BankingAPI.Controllers
                     transactions[i].Account = account;
                     transactions[i].Bank = account.Bank;
                 }
-                AddAll(transactions);
+                Repository.AddRange(transactions);
+                Context.SaveChanges();
             }
             return Ok();
         }
@@ -58,7 +59,7 @@ namespace BankingAPI.Controllers
             if (!long.TryParse(accountIdHeader, out var accountId))
                 throw new Exception($"Invalid account id : {accountIdHeader}");
 
-             var account = AccountController.GetById(accountId);
+            Account account = null; //AccountController.GetEntity(accountId).Result.Value;
 
             if (account is null)
                 throw new Exception($"An account with the od if '{accountId}' count not be found");
