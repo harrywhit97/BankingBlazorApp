@@ -51,9 +51,8 @@
         await service.DeleteBankAsync(bank);
     }
 
-    void AddItem()
+    async void AddItem()
     {
-
-
+        await service.AddBankAsync(formEntity);
     }
 }

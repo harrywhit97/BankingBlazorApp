@@ -40,7 +40,7 @@ namespace BankingAPI.Abstract
 
         public virtual IActionResult Post([FromBody] TEntity entity)
         {
-            if (!IsValid(entity))
+            if (entity is null || !IsValid(entity))
                 return BadRequest();
 
             Repository.Add(entity);

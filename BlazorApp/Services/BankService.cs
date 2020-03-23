@@ -2,6 +2,7 @@
 using Domain.Models;
 using Newtonsoft.Json;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BlazorApp.Services
@@ -38,16 +39,15 @@ namespace BlazorApp.Services
 
         public async Task<bool> AddBankAsync(Bank bank)
         {
-            return true; ;
-           /* var content = new HttpContent();
+            var json = JsonConvert.SerializeObject(bank);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             using (var client = new HttpClient())
             {
-                var response = await client.PostAsync($"{baseUrl}/api/bank");
+                var response = await client.PostAsync($"{baseUrl}/api/bank", content);
 
                 return response.IsSuccessStatusCode;
             }
-            */
         }
     }
 }

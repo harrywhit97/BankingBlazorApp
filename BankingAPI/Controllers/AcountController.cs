@@ -10,19 +10,5 @@ namespace BankingAPI.Controllers
             : base(context, validator)
         {
         }
-        
-        //[HttpGet("{id}")]
-        //public override Account GetById(long id)
-        //{
-        //    return Repository.Include(x => x.Bank)
-        //                     .Where(x => x.Id == id).FirstOrDefaultAsync().Result;
-        //}
-
-        //[HttpGet]
-        //public override IEnumerable<Account> GetAll()
-        //{
-        //    return Repository.Include(x => x.Bank)
-        //                     .AsEnumerable();
-        //}
     }
 }
