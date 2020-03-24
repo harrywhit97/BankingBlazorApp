@@ -3,12 +3,9 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System;
 using BankingAPI.Abstract;
 using BankingAPI.Validation;
-using BankingAPI.Controllers;
-using BankingAPI;
 
 namespace BankingAPI.Controllers
 {
@@ -23,9 +20,18 @@ namespace BankingAPI.Controllers
             AccountController = accountController;
         }
 
-        [HttpPost("import"), DisableRequestSizeLimit]
-        public async Task<IActionResult> ImportFiles(List<IFormFile> files)
+        public IActionResult Post(List<IFormFile> files)
         {
+            Account account;
+            try
+            {
+                account = GetAccount();
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }            
+
             foreach (var file in files)
             {
                 Console.WriteLine($"Importing file : {file.FileName}");
@@ -34,9 +40,7 @@ namespace BankingAPI.Controllers
                 using (var stream = file.OpenReadStream())
                 {
                     transactions.AddRange(CsvReader.Reader.ReadFileStream(stream));
-                }
-
-                var account = GetAccount();
+                }                
 
                 for (int i = 0; i < transactions.Count; i++)
                 {
@@ -59,10 +63,10 @@ namespace BankingAPI.Controllers
             if (!long.TryParse(accountIdHeader, out var accountId))
                 throw new Exception($"Invalid account id : {accountIdHeader}");
 
-            Account account = null; //AccountController.GetEntity(accountId).Result.Value;
+            Account account = AccountController.Get(accountId).Value;
 
             if (account is null)
-                throw new Exception($"An account with the od if '{accountId}' count not be found");
+                throw new Exception($"An account with the id of '{accountId}' count not be found");
 
             return account;
         }

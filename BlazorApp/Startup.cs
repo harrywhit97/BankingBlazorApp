@@ -29,7 +29,16 @@ namespace BlazorApp
             services.AddFileReaderService();
             services.AddSyncfusionBlazor();
 
+            var hostConfig = new HostConfiguration()
+            {
+                BankAPIUrl = Configuration.GetValue<string>("BankAPIUrl")
+            };
+
+            services.AddSingleton(typeof(HostConfiguration), hostConfig);
+
             services.AddSingleton<BankService>();
+            services.AddSingleton<AccountService>();
+            services.AddSingleton<TransactionService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,7 +1,6 @@
 ﻿using Domain.Abstract;
 using Domain.Enums;
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Models
 {
