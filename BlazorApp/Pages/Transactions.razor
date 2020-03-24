@@ -3,7 +3,8 @@
 @using Domain.Models
 @using Blazor.FileReader
 @using System.Net.Http
-@using BlazorApp.Services  
+@using BlazorApp.Services
+@using BlazorApp.Models
 @inject IFileReaderService fileReaderService
 @inject HttpClient HttpClient
 @inject TransactionService service
@@ -12,73 +13,114 @@
 <h1>Transactions</h1>
 
 <h3>Import </h3>
-<select id="Account" @bind="accountId">
-    @foreach (var account in accounts)
-    {
-        <option value=@account.Id>@account.Name</option>
-    }
-</select>
-<input type="file" multiple @ref=inputElement />
-<button @onclick="UploadFiles">Upload</button>
 
-<br /><pre>@debug</pre>
+@if (transactions == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
 
-@*<button class="btn btn-primary" @onclick="@(e => service.Clear())">Clear</button>*@
-<table class="table" border="1" cellpadding="15">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Date</th>
-            <th>Description</th>
-            <th>Classificaion</th>
-            @*<th>Bank</th>*@
-            <th>Account</th>
-            <th>Transaction Type</th>
-            <th>Amount</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var entity in transactions)
+    <select id="Account" @bind="accountId">
+        @foreach (var account in accounts)
         {
-            <tr>
-                <td>@entity.Id</td>
-                <td>@entity.Date</td>
-                <td>@entity.Description</td>
-                <td>@entity.Classification</td>
-                @*<td>@entity.Bank.Name</td>*@
-                <td>@entity.Account.Name</td>
-                <td>@entity.TransactionType</td>
-                <td>@entity.Amount</td>
-            </tr>
+            <option value=@account.Id>@account.Name</option>
         }
-    </tbody>
-</table>
+    </select>
+    <input type="file" multiple @ref=inputElement />
+    <button @onclick="UploadFiles">Upload</button>
+
+    <br /><pre>@debug</pre>
+
+    @*<button class="btn btn-primary" @onclick="@(e => service.Clear())">Clear</button>*@
+    <table class="table" border="1" cellpadding="15">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Classificaion</th>
+                @*<th>Bank</th>*@
+                <th>Account</th>
+                <th>Transaction Type</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entity in transactions)
+            {
+                <tr>
+                    <td>@entity.Id</td>
+                    <td>@entity.Date</td>
+                    <td>@entity.Description</td>
+                    <td>@entity.Classification</td>
+                    @*<td>@entity.Bank.Name</td>*@
+                    <td>@entity.Account.Name</td>
+                    <td>@entity.TransactionType</td>
+                    <td>@entity.Amount</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <label bind="nav">@currentPage/@numPages</label>
+
+
+    if (skip + top > top)
+    {
+        <button @onclick=Previous> ← </button>
+    }
+
+    if (top + skip < count)
+    {
+        <button @onclick=Next> → </button>
+    }
+}
 
 @code {
-    Account[] accounts;
-    Transaction[] transactions;
+    List<Account> accounts;
+    List<Transaction> transactions;
 
     long accountId = 0;
 
+    int skip = 0;
+    int top = 10;
+    int count = 0;
+    int numPages => (count/top) + 1;
+    int currentPage => (skip/top) + 1;
+
     protected override async Task OnInitializedAsync()
     {
-        UpdateTransactions();
         UpdateAccounts();
+        var response = await GetTransactions();
+        count = response.Count;
+        transactions = response.Entities;
     }
 
     async void UpdateAccounts()
     {
         var res = await accountService.GetEntitiesAsync();
-        accounts = res.Entities.ToArray();
-        StateHasChanged();
+        accounts = res.Entities;
     }
 
-    async void UpdateTransactions()
+    async Task<APIResponse<Transaction>> GetTransactions()
     {
         var url = $"{service.ApiUrl}?$expand=account";
-        var res = await service.GetEntitiesAsync(url: url);
-        transactions = res.Entities.ToArray();
-        StateHasChanged();
+        return await service.GetEntitiesAsync(url: url, skip: skip , top: top);
+    }
+
+    async Task Next()
+    {
+        skip += top;
+        var response = await GetTransactions();
+        transactions = response.Entities;
+    }
+
+    async Task Previous()
+    {
+        skip -= top;
+        var response = await GetTransactions();
+        transactions = response.Entities;
     }
 
     string debug;
@@ -108,6 +150,8 @@
                 content: multipartFormDataContent);
         debug = await res.Content.ReadAsStringAsync();
 
-        UpdateTransactions();
+        var response = await GetTransactions();
+        transactions = response.Entities;
+        count = response.Count;
     }
 }

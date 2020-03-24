@@ -1,37 +1,19 @@
 ﻿using Domain.Abstract;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
 using Microsoft.AspNet.OData;
 
 namespace BankingAPI.Abstract
 {
-    public abstract class GenericController<TEntity, TValidator> : ODataController where TEntity : Entity where TValidator : AbstractValidator<TEntity>
+    public abstract class GenericController<TEntity, TValidator> : ReadOnlyController<TEntity> where TEntity : Entity where TValidator : AbstractValidator<TEntity>
     {
-        readonly protected DbSet<TEntity> Repository;
-        readonly protected DbContext Context;
         readonly TValidator Validator;
 
-        public GenericController(DbContext context, TValidator validator)
+        public GenericController(DbContext context, TValidator validator) : base(context)
         {
-            context.Database.EnsureCreated();
-            Context = context;
-            Repository = context.Set<TEntity>();
             Validator = validator;
-        }
-
-        [EnableQuery]
-        public virtual IEnumerable<TEntity> Get() => Repository.AsEnumerable();
-
-        [EnableQuery]
-        public virtual ActionResult<TEntity> Get([FromODataUri] long key)
-        {
-            var entity = Repository.Find(key);
-            if(entity is null)
-                return NotFound();
-            return entity;
         }
 
         public virtual IActionResult Post([FromBody] TEntity entity)

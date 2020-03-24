@@ -15,13 +15,22 @@ namespace BlazorApp.Abstract
         public GenericService(HostConfiguration hostConfiguration)
         {
             HostConfiguration = hostConfiguration;
-            ApiUrl = $"{HostConfiguration.BankAPIUrl}/api/{typeof(TEntity).Name}".ToLowerInvariant();
+            ApiUrl = $"{HostConfiguration.BankAPIUrl}/{typeof(TEntity).Name}".ToLowerInvariant();
         }
 
-        public virtual async Task<APIResponse<TEntity>> GetEntitiesAsync(int skip = 0, int count = 0, string url = null)
+        public virtual async Task<APIResponse<TEntity>> GetEntitiesAsync(string url = null, int top = 0, int skip = 0)
         {
+            string requestUrl = !string.IsNullOrEmpty(url) ? url : ApiUrl;
+            var urlPaging = $"$count=true&$skip={skip}&$top={top}";
+            
+            if(top > 0)
+            {
+                var joinChar = requestUrl.Contains("?") ? "&" : "?";
+                requestUrl = $"{requestUrl}{joinChar}{urlPaging}";
+            }            
+
             using var client = new HttpClient();
-            var response = client.GetAsync(url ?? ApiUrl).Result;
+            var response = client.GetAsync(requestUrl).Result;
 
             if (response.IsSuccessStatusCode)
             {
