@@ -23,10 +23,7 @@ namespace BankingAPI.Abstract
         }
 
         [EnableQuery]
-        public virtual IEnumerable<TEntity> Get()
-        {
-            return Repository.AsEnumerable();
-        }
+        public virtual IEnumerable<TEntity> Get() => Repository.AsEnumerable();
 
         [EnableQuery]
         public virtual ActionResult<TEntity> Get([FromODataUri] long key)
@@ -99,21 +96,14 @@ namespace BankingAPI.Abstract
             catch (DbUpdateConcurrencyException)
             {
                 if (!EntityExists(key))
-                {
                     return NotFound();
-                }
                 else
-                {
                     throw;
-                }
             }
             return Updated(update);
         }
 
-        bool EntityExists(long key)
-        {
-            return Repository.Any(x => x.Id == key);
-        }
+        bool EntityExists(long key) => Repository.Any(x => x.Id == key);
 
         bool IsValid(TEntity entity)
         {
