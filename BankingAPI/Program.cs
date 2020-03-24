@@ -16,7 +16,6 @@ namespace BankingAPI
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseKestrel();
-
                     webBuilder.UseStartup<Startup>();
                 });
     }

@@ -14,7 +14,7 @@ namespace BlazorApp.Services
         {
         }
 
-        public override async Task<bool> AddBankAsync(Bank bank)
+        public override async Task<bool> AddEntityAsync(Bank bank)
         {
             bank.Accounts = new List<Account>();
             var json = JsonConvert.SerializeObject(bank);

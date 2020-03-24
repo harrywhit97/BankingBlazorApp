@@ -48,7 +48,7 @@
     async void Delete(Bank bank)
     {
 
-        var success = await  service.DeleteBankAsync(bank);
+        var success = await  service.DeleteEntityAsync(bank);
 
         if (success)
             UpdateBanks();
@@ -56,7 +56,7 @@
 
     async void AddItem()
     {
-        var success = await service.AddBankAsync(formEntity);
+        var success = await service.AddEntityAsync(formEntity);
 
         if (success)
             UpdateBanks();
@@ -64,7 +64,7 @@
 
     async void UpdateBanks()
     {
-        var res = await service.GetBanksAsync();
+        var res = await service.GetEntitiesAsync();
         banks = res.Entities;
         StateHasChanged();
     }

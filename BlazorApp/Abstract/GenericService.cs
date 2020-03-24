@@ -10,7 +10,7 @@ namespace BlazorApp.Abstract
     public abstract class GenericService<TEntity> where TEntity : Entity
     {
         readonly HostConfiguration HostConfiguration;
-        readonly protected string ApiUrl;
+        readonly public string ApiUrl;
 
         public GenericService(HostConfiguration hostConfiguration)
         {
@@ -18,29 +18,33 @@ namespace BlazorApp.Abstract
             ApiUrl = $"{HostConfiguration.BankAPIUrl}/api/{typeof(TEntity).Name}".ToLowerInvariant();
         }
 
-        public virtual async Task<APIResponse<TEntity>> GetBanksAsync(int skip = 0, int count = 0)
+        public virtual async Task<APIResponse<TEntity>> GetEntitiesAsync(int skip = 0, int count = 0, string url = null)
         {
             using var client = new HttpClient();
-            var response = client.GetAsync(ApiUrl).Result;
+            var response = client.GetAsync(url ?? ApiUrl).Result;
 
             if (response.IsSuccessStatusCode)
             {
                 var jsonString = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<APIResponse<TEntity>>(jsonString);
             }
-
             return new APIResponse<TEntity>();
         }
 
-        public async Task<bool> DeleteBankAsync(TEntity entity)
+        public async Task<bool> DeleteEntityAsync(TEntity entity)
+        {
+            return await DeleteEntityAsync(entity.Id);
+        }
+
+        public async Task<bool> DeleteEntityAsync(long id)
         {
             using var client = new HttpClient();
-            var response = await client.DeleteAsync($"{ApiUrl}/{entity.Id}");
+            var response = await client.DeleteAsync($"{ApiUrl}/{id}");
 
             return response.IsSuccessStatusCode;
         }
 
-        public virtual async Task<bool> AddBankAsync(TEntity entity)
+        public virtual async Task<bool> AddEntityAsync(TEntity entity)
         {
             var json = JsonConvert.SerializeObject(entity);
             var content = new StringContent(json, Encoding.UTF8, "application/json");

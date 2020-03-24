@@ -29,10 +29,9 @@ namespace BlazorApp
             services.AddFileReaderService();
             services.AddSyncfusionBlazor();
 
-            var bankApiUrl = Configuration.GetValue<string>("BankAPIUrl");
             var hostConfig = new HostConfiguration()
             {
-                BankAPIUrl = bankApiUrl
+                BankAPIUrl = Configuration.GetValue<string>("BankAPIUrl")
             };
 
             services.AddSingleton(typeof(HostConfiguration), hostConfig);

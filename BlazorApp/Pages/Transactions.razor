@@ -2,9 +2,12 @@
 
 @using Domain.Models
 @using Blazor.FileReader
+@using System.Net.Http
+@using BlazorApp.Services  
 @inject IFileReaderService fileReaderService
 @inject HttpClient HttpClient
-@using System.Net.Http
+@inject TransactionService service
+@inject AccountService accountService
 
 <h1>Transactions</h1>
 
@@ -55,6 +58,26 @@
 
     long accountId = 0;
 
+    protected override async Task OnInitializedAsync()
+    {
+        UpdateTransactions();
+        UpdateAccounts();
+    }
+
+    async void UpdateAccounts()
+    {
+        var res = await accountService.GetEntitiesAsync();
+        accounts = res.Entities.ToArray();
+        StateHasChanged();
+    }
+
+    async void UpdateTransactions()
+    {
+        var url = $"{service.ApiUrl}?$expand=account";
+        var res = await service.GetEntitiesAsync(url: url);
+        transactions = res.Entities.ToArray();
+        StateHasChanged();
+    }
 
     //Upload things
 
@@ -81,8 +104,10 @@
                 (await file.ReadFileInfoAsync()).Name);
         }
 
-        var res = await HttpClient.PostAsync(requestUri: "https://localhost:5001/api/transaction/import",
+        var res = await HttpClient.PostAsync(requestUri: $"{service.ApiUrl}",
                 content: multipartFormDataContent);
         debug = await res.Content.ReadAsStringAsync();
+
+        UpdateTransactions();
     }
 }
