@@ -31,6 +31,7 @@
             <th>Date</th>
             <th>Description</th>
             <th>Classificaion</th>
+            @*<th>Bank</th>*@
             <th>Account</th>
             <th>Transaction Type</th>
             <th>Amount</th>
@@ -44,6 +45,7 @@
                 <td>@entity.Date</td>
                 <td>@entity.Description</td>
                 <td>@entity.Classification</td>
+                @*<td>@entity.Bank.Name</td>*@
                 <td>@entity.Account.Name</td>
                 <td>@entity.TransactionType</td>
                 <td>@entity.Amount</td>
@@ -78,8 +80,6 @@
         transactions = res.Entities.ToArray();
         StateHasChanged();
     }
-
-    //Upload things
 
     string debug;
     ElementReference inputElement;
