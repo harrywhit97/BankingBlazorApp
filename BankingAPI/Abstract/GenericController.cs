@@ -8,11 +8,10 @@ using Microsoft.AspNet.OData;
 
 namespace BankingAPI.Abstract
 {
-
     public abstract class GenericController<TEntity, TValidator> : ODataController where TEntity : Entity where TValidator : AbstractValidator<TEntity>
     {
-        readonly public DbSet<TEntity> Repository;
-        readonly public DbContext Context;
+        readonly protected DbSet<TEntity> Repository;
+        readonly protected DbContext Context;
         readonly TValidator Validator;
 
         public GenericController(DbContext context, TValidator validator)
@@ -61,8 +60,7 @@ namespace BankingAPI.Abstract
         }
 
         public IActionResult Patch([FromODataUri] long key, [FromBody] Delta<TEntity> entityDelta)
-        {
-           
+        {           
             var entity = Repository.Find(key);
             
             if (entity is null)
@@ -112,7 +110,7 @@ namespace BankingAPI.Abstract
             return Updated(update);
         }
 
-        private bool EntityExists(long key)
+        bool EntityExists(long key)
         {
             return Repository.Any(x => x.Id == key);
         }

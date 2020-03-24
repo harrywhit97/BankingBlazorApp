@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BlazorApp.Abstract;
+using Domain.Models;
 
 namespace BlazorApp.Services
 {
-    public class TranactionService
+    public class TransactionService : GenericService<Transaction>
     {
+        public TransactionService(HostConfiguration hostConfiguration) : base(hostConfiguration)
+        {
+        }
     }
 }
