@@ -89,8 +89,8 @@
 
     async void UpdateAccounts()
     {
-        var expandedUrl = $"{service.ApiUrl}?$expand=bank";
-        var res = await service.GetEntitiesAsync(url: expandedUrl);
+        var expandBank = $"$expand=bank";
+        var res = await service.GetEntitiesAsync(expands: expandBank);
         accounts = res.Entities.ToArray();
         StateHasChanged();
     }

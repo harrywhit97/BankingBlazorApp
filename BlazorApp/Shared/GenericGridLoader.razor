@@ -1,0 +1,35 @@
+﻿@typeparam TEntity
+
+@if (Entities == null)
+{
+    if (NullFragment == null)
+    {
+        <text> Loading... </text>
+    }
+    else
+    {
+        @NullFragment
+    }
+}
+else if (Entities.Count == 0)
+{
+    if (EmptyFragment == null)
+    {
+        <text> There are no records. </text>
+    }
+    else
+    {
+        @EmptyFragment
+    }
+}
+else
+{
+    @PopulatedFragment
+}
+
+@code {
+    [Parameter] public List<TEntity> Entities { get; set; }
+    [Parameter] public RenderFragment NullFragment { get; set; }
+    [Parameter] public RenderFragment EmptyFragment { get; set; }
+    [Parameter] public RenderFragment PopulatedFragment { get; set; }
+}

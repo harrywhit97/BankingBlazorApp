@@ -18,16 +18,23 @@ namespace BlazorApp.Abstract
             ApiUrl = $"{HostConfiguration.BankAPIUrl}/{typeof(TEntity).Name}".ToLowerInvariant();
         }
 
-        public virtual async Task<APIResponse<TEntity>> GetEntitiesAsync(string url = null, int top = 0, int skip = 0)
+        public virtual async Task<APIResponse<TEntity>> GetEntitiesAsync(
+            int top = 0, 
+            int skip = 0, 
+            bool getCount = true, 
+            string filters = null, 
+            string expands = null,
+            string selects = null)
         {
-            string requestUrl = !string.IsNullOrEmpty(url) ? url : ApiUrl;
-            var urlPaging = $"$count=true&$skip={skip}&$top={top}";
-            
-            if(top > 0)
-            {
-                var joinChar = requestUrl.Contains("?") ? "&" : "?";
-                requestUrl = $"{requestUrl}{joinChar}{urlPaging}";
-            }            
+            string requestUrl = ApiUrl;
+
+            if (getCount)
+                requestUrl = AddOdataQuerySegment(requestUrl, "$count=true");
+
+            requestUrl = AddPageination(requestUrl, skip, top);
+            requestUrl = AddOdataQuerySegment(requestUrl, filters);
+            requestUrl = AddOdataQuerySegment(requestUrl, selects);
+            requestUrl = AddOdataQuerySegment(requestUrl, expands);
 
             using var client = new HttpClient();
             var response = client.GetAsync(requestUrl).Result;
@@ -61,6 +68,22 @@ namespace BlazorApp.Abstract
             using var client = new HttpClient();
             var response = await client.PostAsync(ApiUrl, content);
             return response.IsSuccessStatusCode;
+        }
+
+        public string AddOdataQuerySegment(string url, string segment)
+        {
+            if (segment is null)
+                return url;
+
+            var joinChar = url.Contains("?") ? "&" : "?";
+            return $"{url}{joinChar}{segment}";
+        }
+
+        string AddPageination(string url, int skip, int top)
+        {
+            return top > 0
+                ? AddOdataQuerySegment(url, $"$skip={skip}&$top={top}")
+                : url;
         }
     }
 }

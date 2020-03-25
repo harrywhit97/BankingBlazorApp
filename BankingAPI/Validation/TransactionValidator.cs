@@ -22,6 +22,7 @@ namespace BankingAPI.Validation
                 .Length(1, 255);
 
             RuleFor(x => x.Classification)
+                .NotNull()
                 .Length(0, 255);
 
             RuleFor(x => x.Amount)

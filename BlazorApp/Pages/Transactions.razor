@@ -12,89 +12,97 @@
 
 <h1>Transactions</h1>
 
-<h3>Import </h3>
+Import: 
+<select id="Account" @bind="accountId">
+    @foreach (var account in accounts)
+    {
+        <option value=@account.Id>@account.Name</option>
+    }
+</select>
+<input type="file" multiple @ref=inputElement />
+<button @onclick="UploadFiles">Upload</button>
 
-@if (transactions == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
+<br /><pre>@debug</pre>
 
-    <select id="Account" @bind="accountId">
-        @foreach (var account in accounts)
-        {
-            <option value=@account.Id>@account.Name</option>
-        }
-    </select>
-    <input type="file" multiple @ref=inputElement />
-    <button @onclick="UploadFiles">Upload</button>
+Filters: 
 
-    <br /><pre>@debug</pre>
+<select id="Classification" @bind="classificationFilter">
+    @foreach (var classification in classifications)
+    {
+        <option value=@classification>@classification</option>
+    }
+</select>
 
-    @*<button class="btn btn-primary" @onclick="@(e => service.Clear())">Clear</button>*@
-    <table class="table" border="1" cellpadding="15">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Date</th>
-                <th>Description</th>
-                <th>Classificaion</th>
-                @*<th>Bank</th>*@
-                <th>Account</th>
-                <th>Transaction Type</th>
-                <th>Amount</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var entity in transactions)
-            {
+<button @onclick="UpdateTransactionWithFilter">Search</button>
+
+
+<GenericGridLoader Entities="transactions">
+    <PopulatedFragment>
+        <table class="table" border="1" cellpadding="15">
+            <thead>
                 <tr>
-                    <td>@entity.Id</td>
-                    <td>@entity.Date</td>
-                    <td>@entity.Description</td>
-                    <td>@entity.Classification</td>
-                    @*<td>@entity.Bank.Name</td>*@
-                    <td>@entity.Account.Name</td>
-                    <td>@entity.TransactionType</td>
-                    <td>@entity.Amount</td>
+                    <th>Id</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Classificaion</th>
+                    @*<th>Bank</th>*@
+                    <th>Account</th>
+                    <th>Transaction Type</th>
+                    <th>Amount</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var entity in transactions)
+                {
+                    <tr>
+                        <td>@entity.Id</td>
+                        <td>@entity.Date</td>
+                        <td>@entity.Description</td>
+                        <td>@entity.Classification</td>
+                        @*<td>@entity.Bank.Name</td>*@
+                        <td>@entity.Account.Name</td>
+                        <td>@entity.TransactionType</td>
+                        <td>@entity.Amount</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </PopulatedFragment>
+</GenericGridLoader>    
 
-    <label bind="nav">@currentPage/@numPages</label>
+<label bind="nav">@currentPage/@numPages</label>
 
 
-    if (skip + top > top)
-    {
-        <button @onclick=Previous> ← </button>
-    }
+@if (skip + top > top)
+{
+    <button @onclick=Previous> ← </button>
+}
 
-    if (top + skip < count)
-    {
-        <button @onclick=Next> → </button>
-    }
+@if (top + skip < count)
+{
+    <button @onclick=Next> → </button>
 }
 
 @code {
     List<Account> accounts;
     List<Transaction> transactions;
 
+    List<string> classifications;
+    string classificationFilter;
+
     long accountId = 0;
 
     int skip = 0;
     int top = 10;
     int count = 0;
-    int numPages => (count/top) + 1;
-    int currentPage => (skip/top) + 1;
+    int numPages => (count / top) + 1;
+    int currentPage => (skip / top) + 1;
 
     protected override async Task OnInitializedAsync()
     {
         UpdateAccounts();
-        var response = await GetTransactions();
-        count = response.Count;
-        transactions = response.Entities;
+        UpdateTransactions(true);
+        classifications = await service.GetClassificationsAsync();
     }
 
     async void UpdateAccounts()
@@ -103,24 +111,36 @@ else
         accounts = res.Entities;
     }
 
-    async Task<APIResponse<Transaction>> GetTransactions()
+    void UpdateTransactions(bool updateCount = false)
     {
-        var url = $"{service.ApiUrl}?$expand=account";
-        return await service.GetEntitiesAsync(url: url, skip: skip , top: top);
+
+        var res = service.GetEntitiesAsync(skip: skip, top: top).Result;
+
+        transactions = res.Entities;
+
+        if (updateCount)
+            count = res.Count;
     }
 
-    async Task Next()
+    void UpdateTransactionWithFilter()
+    {
+        var response = service.GetEntitiesWithFilters(classificationFilter).Result;
+
+        count = response.Count;
+        skip = 0;
+        transactions = response.Entities;
+    }
+
+    void Next()
     {
         skip += top;
-        var response = await GetTransactions();
-        transactions = response.Entities;
+        UpdateTransactions();
     }
 
-    async Task Previous()
+    void Previous()
     {
         skip -= top;
-        var response = await GetTransactions();
-        transactions = response.Entities;
+        UpdateTransactions();
     }
 
     string debug;
@@ -150,8 +170,6 @@ else
                 content: multipartFormDataContent);
         debug = await res.Content.ReadAsStringAsync();
 
-        var response = await GetTransactions();
-        transactions = response.Entities;
-        count = response.Count;
+        UpdateTransactions(true);
     }
 }

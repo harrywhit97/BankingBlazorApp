@@ -1,23 +1,24 @@
 ﻿using Domain.Enums;
 using Domain.Models;
 using Reporting.Enums;
+using ReportingService.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Reporting
+namespace ReportingService
 {
-    public class YearSpending
+    public class YearSpending : IReport
     {
-        public IList<Point> GetData(IEnumerable<Transaction> transactionsForYear)
+        public IList<Point> GetData(IEnumerable<Transaction> transactions)
         {
             var data = new List<Point>();
             
             foreach (var month in Enum.GetValues(typeof(Month)))
             {
-                var monthTransactions = transactionsForYear.Where(x => x.Date.Month == (int)month);
+                var monthTransactions = transactions.Where(x => x.Date.Month == (int)month);
                 var totalSpends = CalulateTotalSpends(monthTransactions);
-                data.Add(new Point((Month)month, totalSpends));
+                data.Add(new Point(month.ToString(), totalSpends));
             }
             return data;
         }
@@ -31,16 +32,6 @@ namespace Reporting
                 total += transaction.TransactionType == TransactionType.Credit ? transaction.Amount : -transaction.Amount;
             }
             return total;
-        }
-
-        public class Point
-        {
-            public Month Month { get; set; }
-            public decimal Amount { get; set; }
-
-            public Point(Month month, decimal amount) =>
-                (Month, Amount) = (month, amount);
-
         }
     }
 }

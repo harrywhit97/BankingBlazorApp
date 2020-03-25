@@ -46,6 +46,9 @@ namespace BankingAPI.Controllers
                 {
                     transactions[i].Account = account;
                     transactions[i].Bank = account.Bank;
+
+                    if (string.IsNullOrEmpty(transactions[i].Classification))
+                        transactions[i].Classification = "NotClassified";
                 }
                 Repository.AddRange(transactions);
                 Context.SaveChanges();
