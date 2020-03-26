@@ -2,6 +2,10 @@
 
 @using Syncfusion.Blazor.Charts
 @using System.Linq
+@using Services
+@using ReportingService
+@using Domain.Models
+@inject TransactionService service
 
 <h1>Reporting</h1>
 
@@ -9,31 +13,25 @@
 <SfChart>
     <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
     <ChartSeriesCollection>
-        <ChartSeries DataSource="@Sales" XName="Month" YName="SalesValue" Type="ChartSeriesType.Column">
+        <ChartSeries DataSource="@data" XName="Selector" YName="Amount" Type="ChartSeriesType.Column">
         </ChartSeries>
     </ChartSeriesCollection>
 </SfChart>
 
 @code{
 
-  //  IEnumerable<Transactions> yearTransactions = service.GetAll();//.Where(x => x.Date.Year == 2019);
+    IEnumerable<Transaction> transactions;
 
-  //  IList<Point> data = YearSpending.GetData(yearTransactions);
+    IList<Point> data;
 
-
-    public class SalesInfo
+    protected override async Task OnInitializedAsync()
     {
-        public string Month;
-        public double SalesValue;
+        UpdateTransactions();
+        data = YearByCategory.GetData(transactions);
     }
-    public List<SalesInfo> Sales = new List<SalesInfo>
+
+    public void UpdateTransactions()
     {
-            new SalesInfo { Month = "Jan", SalesValue = 35 },
-            new SalesInfo { Month = "Feb", SalesValue = 28 },
-            new SalesInfo { Month = "Mar", SalesValue = 34 },
-            new SalesInfo { Month = "Apr", SalesValue = 32 },
-            new SalesInfo { Month = "May", SalesValue = 40 },
-            new SalesInfo { Month = "Jun", SalesValue = 32 },
-            new SalesInfo { Month = "Jul", SalesValue = 35 }
-    };
+        transactions = service.GetEntitiesAsync().Result.Entities;
+    }
 }

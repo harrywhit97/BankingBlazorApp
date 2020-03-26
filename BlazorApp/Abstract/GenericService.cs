@@ -15,19 +15,22 @@ namespace BlazorApp.Abstract
         public GenericService(HostConfiguration hostConfiguration)
         {
             HostConfiguration = hostConfiguration;
-            ApiUrl = $"{HostConfiguration.BankAPIUrl}/api/{typeof(TEntity).Name}".ToLowerInvariant();
+            ApiUrl = $"{HostConfiguration.BankAPIUrl}/{typeof(TEntity).Name}".ToLowerInvariant();
         }
 
-        public virtual async Task<APIResponse<TEntity>> GetEntitiesAsync(int skip = 0, int count = 0, string url = null)
+        public virtual async Task<APIResponse<TEntity>> GetEntitiesAsync(OdataQueryBuilder odataQueryBuilder = null)
         {
+            var url = odataQueryBuilder?.BuildUrl() ?? ApiUrl;
+            
             using var client = new HttpClient();
-            var response = client.GetAsync(url ?? ApiUrl).Result;
+            var response = client.GetAsync(url).Result;
 
             if (response.IsSuccessStatusCode)
             {
                 var jsonString = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<APIResponse<TEntity>>(jsonString);
             }
+
             return new APIResponse<TEntity>();
         }
 
@@ -52,6 +55,13 @@ namespace BlazorApp.Abstract
             using var client = new HttpClient();
             var response = await client.PostAsync(ApiUrl, content);
             return response.IsSuccessStatusCode;
+        }
+
+        public virtual OdataQueryBuilder GetQueryBuilder()
+        {
+            var builder = new OdataQueryBuilder(ApiUrl);
+            builder.Count = true;
+            return builder;
         }
     }
 }

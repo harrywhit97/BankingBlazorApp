@@ -1,7 +1,9 @@
-﻿using Blazor.FileReader;
-using BlazorApp.Abstract;
+﻿using BlazorApp.Abstract;
+using BlazorApp.Models;
 using Domain.Models;
-using System.Net.Http;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BlazorApp.Services
 {
@@ -9,6 +11,35 @@ namespace BlazorApp.Services
     {
         public TransactionService(HostConfiguration hostConfiguration) : base(hostConfiguration)
         {
+        }
+
+        public override Task<APIResponse<Transaction>> GetEntitiesAsync(OdataQueryBuilder odataQueryBuilder = null)
+        {
+            return base.GetEntitiesAsync(odataQueryBuilder);
+        }
+
+        public async Task<List<string>> GetClassificationsAsync()
+        {
+            var odataQueryBuilder = new OdataQueryBuilder(ApiUrl);
+            odataQueryBuilder.Select.Add(nameof(Transaction.Classification));
+
+            var response = await base.GetEntitiesAsync();
+
+            var classifications = new List<string>() { "" };
+
+            foreach (var category in response.Entities.Select(x => x.Classification))
+            {
+                if (!classifications.Contains(category))
+                    classifications.Add(category);
+            }
+            return classifications;
+        }
+
+        public override OdataQueryBuilder GetQueryBuilder()
+        {
+            var builder = base.GetQueryBuilder();
+            builder.Expand.Add(nameof(Transaction.Account));
+            return builder;
         }
     }
 }
