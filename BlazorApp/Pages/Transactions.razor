@@ -26,14 +26,14 @@ Import:
 
 Filters: 
 
-<select id="Classification" @bind="classificationFilter">
+<select id="Classification" @bind="filter.classificationFilter">
     @foreach (var classification in classifications)
     {
         <option value=@classification>@classification</option>
     }
 </select>
 
-<button @onclick="UpdateTransactionWithFilter">Search</button>
+<button @onclick="FilterSearch">Search</button>
 
 
 <GenericGridLoader Entities="transactions">
@@ -70,7 +70,8 @@ Filters:
     </PopulatedFragment>
 </GenericGridLoader>    
 
-<label bind="nav">@currentPage/@numPages</label>
+<label bind="nav">Page @currentPage/@numPages</label>
+<label bind="nav">Total results: @count</label>
 
 
 @if (skip + top > top)
@@ -88,7 +89,7 @@ Filters:
     List<Transaction> transactions;
 
     List<string> classifications;
-    string classificationFilter;
+    (string filterName, string classificationFilter) filter;
 
     long accountId = 0;
 
@@ -113,22 +114,25 @@ Filters:
 
     void UpdateTransactions(bool updateCount = false)
     {
+        var queryBuilder = service.GetQueryBuilder();
 
-        var res = service.GetEntitiesAsync(skip: skip, top: top).Result;
+        queryBuilder.Top = top;
+        queryBuilder.Skip = skip;
+        queryBuilder.Filter = filter;
+
+        var res = service.GetEntitiesAsync(queryBuilder).Result;
 
         transactions = res.Entities;
 
-        if (updateCount)
+        if(updateCount)
             count = res.Count;
     }
 
-    void UpdateTransactionWithFilter()
+    void FilterSearch()
     {
-        var response = service.GetEntitiesWithFilters(classificationFilter).Result;
-
-        count = response.Count;
         skip = 0;
-        transactions = response.Entities;
+        filter.filterName = nameof(Transaction.Classification);
+        UpdateTransactions(true);
     }
 
     void Next()

@@ -12,5 +12,12 @@ namespace BlazorApp.Services
         public AccountService(HostConfiguration hostConfiguration) : base(hostConfiguration)
         {
         }
+
+        public override OdataQueryBuilder GetQueryBuilder()
+        {
+            var builder = base.GetQueryBuilder();
+            builder.Expand.Add(nameof(Account.Bank));
+            return builder;
+        }
     }
 }

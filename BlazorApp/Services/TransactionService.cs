@@ -13,20 +13,17 @@ namespace BlazorApp.Services
         {
         }
 
-        public override Task<APIResponse<Transaction>> GetEntitiesAsync(int top = 0, int skip = 0, bool getCount = true, string filters = null, string expands = null, string selects = null)
+        public override Task<APIResponse<Transaction>> GetEntitiesAsync(OdataQueryBuilder odataQueryBuilder = null)
         {
-            var expandAccount = "$expand=account";
-
-            expands = expands is null ? expandAccount : $"{expands}&{expandAccount}";
-
-            return base.GetEntitiesAsync(top, skip, getCount, filters, expands, selects);
+            return base.GetEntitiesAsync(odataQueryBuilder);
         }
 
         public async Task<List<string>> GetClassificationsAsync()
         {
-            var select = $"$select=classification";
+            var odataQueryBuilder = new OdataQueryBuilder(ApiUrl);
+            odataQueryBuilder.Select.Add(nameof(Transaction.Classification));
 
-            var response = await base.GetEntitiesAsync(selects: select);
+            var response = await base.GetEntitiesAsync();
 
             var classifications = new List<string>() { "" };
 
@@ -37,16 +34,12 @@ namespace BlazorApp.Services
             }
             return classifications;
         }
-    
-    
-        public async Task<APIResponse<Transaction>> GetEntitiesWithFilters(string classification = null, int skip = 0, int top = 0)
-        {
-            if (string.IsNullOrEmpty(classification))
-                return await GetEntitiesAsync(skip: skip, top: top);
-            
-            var filter = $"$filter={nameof(classification)} eq '{classification}'";
 
-            return await GetEntitiesAsync(skip: skip, top: top, filters: filter);
+        public override OdataQueryBuilder GetQueryBuilder()
+        {
+            var builder = base.GetQueryBuilder();
+            builder.Expand.Add(nameof(Transaction.Account));
+            return builder;
         }
     }
 }

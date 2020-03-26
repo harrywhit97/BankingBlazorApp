@@ -89,8 +89,7 @@
 
     async void UpdateAccounts()
     {
-        var expandBank = $"$expand=bank";
-        var res = await service.GetEntitiesAsync(expands: expandBank);
+        var res = await service.GetEntitiesAsync();
         accounts = res.Entities.ToArray();
         StateHasChanged();
     }
